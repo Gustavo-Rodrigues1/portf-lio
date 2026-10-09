@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { SteampunkGear } from './SteampunkGear';
 import { SteamGauge } from './SteamGauge';
 import { profileData } from '../data/profile';
-import { Flame, ArrowDown, ExternalLink, Sparkles, Compass } from 'lucide-react';
+import { Flame, ArrowDown, ExternalLink, Sparkles, Compass, Camera } from 'lucide-react';
 
 export const Hero = () => {
   const [steamPressure, setSteamPressure] = useState(78);
   const [steamPuffing, setSteamPuffing] = useState(false);
+  const [userPhoto, setUserPhoto] = useState(null);
 
   const handleBoostPressure = () => {
     setSteamPuffing(true);
@@ -14,6 +15,14 @@ export const Hero = () => {
     setTimeout(() => {
       setSteamPuffing(false);
     }, 1200);
+  };
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setUserPhoto(url);
+    }
   };
 
   return (
@@ -59,29 +68,88 @@ export const Hero = () => {
           
           {/* Coluna Esquerda: Apresentação e Tipografia Vitoriana */}
           <div className="lg:col-span-7 flex flex-col items-start text-left">
-            {/* Selo UFS Superior */}
-            <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-sm bg-[#221a13] border border-brass-dark shadow-md mb-6">
-              <Compass className="w-4 h-4 text-copper-light animate-spin-slow" />
-              <span className="font-schematic text-xs font-bold tracking-wider text-brass-light uppercase">
-                {profileData.personal.university}
-              </span>
-              <span className="text-brass-dark">•</span>
-              <span className="text-[11px] font-schematic text-[#cbba9d]">
-                Sistemas de Informação
-              </span>
-            </div>
+            
+            {/* Bloco de Apresentação com Retrato Vitoriano (Foto de Gustavo) */}
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6 w-full">
+              {/* Medalhão Steampunk da Foto */}
+              <div className="relative group/photo flex-shrink-0">
+                {/* Engrenagem girando sutilmente atrás da foto */}
+                <div className="absolute -inset-2.5 pointer-events-none opacity-40 group-hover/photo:opacity-75 transition-opacity">
+                  <SteampunkGear size={138} teeth={12} color="brass" speed="spin-slow" />
+                </div>
 
-            {/* Título Principal H1 (SEO) */}
-            <h1 className="font-cinzel text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-wide text-brass-gradient leading-tight mb-4 drop-shadow-lg">
-              {profileData.personal.name}
-            </h1>
+                {/* Moldura circular de latão com rebites */}
+                <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-tr from-[#3a2817] via-[#c69c4d] to-[#6d4c1b] shadow-[0_8px_25px_rgba(0,0,0,0.85)] border-2 border-brass-dark">
+                  <div className="w-full h-full rounded-full overflow-hidden bg-[#120e0b] border border-[#1a140f] relative flex items-center justify-center">
+                    <img
+                      src={userPhoto || profileData.personal.avatar}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = profileData.personal.avatarFallback;
+                      }}
+                      alt={`Foto de ${profileData.personal.name}`}
+                      className="w-full h-full object-cover rounded-full group-hover/photo:scale-105 transition-transform duration-300"
+                    />
 
-            {/* Subtítulo de Graduação */}
-            <div className="flex items-center gap-3 mb-6">
-              <span className="h-0.5 w-10 bg-gradient-to-r from-brass to-copper"></span>
-              <h2 className="font-celt text-lg sm:text-xl md:text-2xl text-copper-light font-semibold tracking-wide">
-                {profileData.personal.title}
-              </h2>
+                    {/* Overlay informativo ao passar o mouse */}
+                    <label
+                      htmlFor="hero-photo-input"
+                      title="Clique para testar uma foto sua agora ou salve em public/foto-perfil.jpg"
+                      className="absolute inset-0 bg-black/75 opacity-0 group-hover/photo:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center cursor-pointer text-center p-2 rounded-full"
+                    >
+                      <Camera className="w-5 h-5 text-brass-light mb-1" />
+                      <span className="text-[10px] font-schematic font-bold text-brass-light leading-tight">
+                        Sua Foto
+                      </span>
+                      <span className="text-[7.5px] font-schematic text-[#cbba9d] mt-0.5">
+                        foto-perfil.jpg
+                      </span>
+                    </label>
+
+                    <input
+                      id="hero-photo-input"
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePhotoUpload}
+                      className="hidden"
+                    />
+                  </div>
+
+                  {/* 4 Rebites mecânicos no anel de latão */}
+                  <span className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></span>
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></span>
+                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></span>
+                  <span className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></span>
+                </div>
+              </div>
+
+              {/* Títulos e Selo Acadêmico */}
+              <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+                {/* Selo UFS Superior */}
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[#221a13] border border-brass-dark shadow-md mb-2.5">
+                  <Compass className="w-3.5 h-3.5 text-copper-light animate-spin-slow" />
+                  <span className="font-schematic text-xs font-bold tracking-wider text-brass-light uppercase">
+                    {profileData.personal.university}
+                  </span>
+                  <span className="text-brass-dark">•</span>
+                  <span className="text-[10px] font-schematic text-[#cbba9d]">
+                    {profileData.academic.period}
+                  </span>
+                </div>
+
+                {/* Título Principal H1 (SEO) */}
+                <h1 className="font-cinzel text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-wide text-brass-gradient leading-tight mb-2 drop-shadow-lg">
+                  {profileData.personal.name}
+                </h1>
+
+                {/* Subtítulo de Graduação */}
+                <div className="flex items-center gap-2.5">
+                  <span className="h-0.5 w-8 bg-gradient-to-r from-brass to-copper"></span>
+                  <h2 className="font-celt text-base sm:text-lg md:text-xl text-copper-light font-semibold tracking-wide">
+                    {profileData.personal.title}
+                  </h2>
+                </div>
+              </div>
             </div>
 
             {/* Bio e Descrição Conceitual */}
@@ -189,8 +257,8 @@ export const Hero = () => {
                 </button>
 
                 <div className="flex items-center justify-between w-full text-[11px] font-schematic text-[#a89680]">
-                  <span>Localização: Sergipe - BR</span>
-                  <span className="text-brass">UFS Campus São Cristóvão</span>
+                  <span>{profileData.personal.location}</span>
+                  <span className="text-brass">UFS ({profileData.academic.period})</span>
                 </div>
               </div>
 
@@ -203,12 +271,12 @@ export const Hero = () => {
                 <p className="text-[9px] font-schematic text-[#ab9a83] uppercase mt-0.5">Sistemas</p>
               </div>
               <div className="steampunk-panel p-2.5 rounded text-center border border-brass-dark/40">
-                <span className="font-cinzel text-base font-bold text-copper-light">React</span>
-                <p className="text-[9px] font-schematic text-[#ab9a83] uppercase mt-0.5">+ Tailwind</p>
+                <span className="font-cinzel text-base font-bold text-copper-light">Dev</span>
+                <p className="text-[9px] font-schematic text-[#ab9a83] uppercase mt-0.5">Python & React</p>
               </div>
               <div className="steampunk-panel p-2.5 rounded text-center border border-brass-dark/40">
-                <span className="font-cinzel text-base font-bold text-steamAmber-bright">100%</span>
-                <p className="text-[9px] font-schematic text-[#ab9a83] uppercase mt-0.5">Dedicado</p>
+                <span className="font-cinzel text-base font-bold text-steamAmber-bright">SECOM</span>
+                <p className="text-[9px] font-schematic text-[#ab9a83] uppercase mt-0.5">Estágio TI</p>
               </div>
             </div>
 

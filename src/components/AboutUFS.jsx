@@ -9,7 +9,9 @@ import {
   ShieldCheck, 
   BookOpen, 
   CheckCircle2,
-  Award
+  Award,
+  Briefcase,
+  Building2
 } from 'lucide-react';
 
 export const AboutUFS = () => {
@@ -54,7 +56,7 @@ export const AboutUFS = () => {
           <p className="text-[#c5b59e] text-sm sm:text-base leading-relaxed">
             {profileData.academic.description} No curso de Sistemas de Informação da UFS, 
             a tecnologia não é apenas código isolado: é a espinha dorsal que move processos, 
-            decisões corporativas e arquiteturas digitais complexas.
+            decisões corporativas e infraestruturas operacionais complexas.
           </p>
         </div>
 
@@ -77,6 +79,9 @@ export const AboutUFS = () => {
                   <h3 className="font-cinzel text-lg sm:text-xl font-bold text-brass-light">
                     Bacharelado em SI
                   </h3>
+                  <span className="text-[10px] font-schematic text-[#a89680]">
+                    {profileData.academic.period} • UFS
+                  </span>
                 </div>
                 <div className="w-12 h-12 rounded-full border-2 border-brass flex items-center justify-center bg-[#241a12] text-brass-light shadow-md">
                   <Award className="w-6 h-6 text-steamAmber-bright" />
@@ -86,11 +91,11 @@ export const AboutUFS = () => {
               <div className="space-y-4 text-xs sm:text-sm text-[#cebeaa] font-body leading-relaxed">
                 <p>
                   A trajetória na <strong className="text-brass-light font-semibold">Universidade Federal de Sergipe</strong> proporcionou
-                  uma visão sistêmica integral: da modelagem conceitual à implementação de alto rendimento.
+                  uma visão sistêmica integral: da infraestrutura de suporte ao desenvolvimento de software moderno.
                 </p>
                 <p>
-                  O perfil de Sistemas de Informação alia raciocínio analítico, capacidade de dialogar com as dores reais do negócio
-                  e maestria na engenharia de software para transformar requisitos abstratos em soluções estáveis e produtivas.
+                  O perfil de Sistemas de Informação alia raciocínio analítico, capacidade de dialogar com os processos reais do negócio
+                  e maestria técnica para transformar requisitos abstratos em soluções eficientes, estáveis e produtivas.
                 </p>
               </div>
             </div>
@@ -98,15 +103,15 @@ export const AboutUFS = () => {
             <div className="mt-8 pt-5 border-t border-brass-dark/40 space-y-2">
               <div className="flex items-center gap-2 text-xs font-schematic text-brass-light">
                 <CheckCircle2 className="w-4 h-4 text-steamAmber-glow flex-shrink-0" />
-                <span>Ênfase em Arquiteturas Escaláveis e APIs</span>
+                <span>Desenvolvimento com Python, React & TypeScript</span>
               </div>
               <div className="flex items-center gap-2 text-xs font-schematic text-brass-light">
                 <CheckCircle2 className="w-4 h-4 text-steamAmber-glow flex-shrink-0" />
-                <span>Gestão Estratégica da Tecnologia da Informação</span>
+                <span>Suporte Técnico, Redes & Infraestrutura de TI</span>
               </div>
               <div className="flex items-center gap-2 text-xs font-schematic text-brass-light">
                 <CheckCircle2 className="w-4 h-4 text-steamAmber-glow flex-shrink-0" />
-                <span>Modelagem Relacional e Bancos Corporativos</span>
+                <span>Bancos de Dados, SQL & Gestão com Power BI</span>
               </div>
             </div>
           </div>
@@ -149,6 +154,74 @@ export const AboutUFS = () => {
           </div>
 
         </div>
+
+        {/* Trajetória Profissional em Destaque (Experiências da SECOM & Moura Dubeux) */}
+        {profileData.experiences && profileData.experiences.length > 0 && (
+          <div className="mt-14 pt-12 border-t border-brass-dark/40">
+            <div className="flex items-center gap-3 mb-8">
+              <Briefcase className="w-5 h-5 text-copper-light" />
+              <h3 className="font-cinzel text-xl sm:text-2xl font-bold text-brass-gradient uppercase tracking-wide">
+                Atuação Profissional & Experiência Prática
+              </h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {profileData.experiences.map((exp, idx) => (
+                <div
+                  key={idx}
+                  className="steampunk-panel p-6 rounded-lg border border-brass-dark/70 hover:border-brass/80 transition-all relative group"
+                >
+                  <div className="flex items-start justify-between gap-4 mb-3">
+                    <div>
+                      <span className="text-[10px] font-schematic uppercase tracking-widest text-copper-light block">
+                        {exp.period} • {exp.location}
+                      </span>
+                      <h4 className="font-cinzel text-base sm:text-lg font-bold text-brass-light mt-1">
+                        {exp.role}
+                      </h4>
+                      <span className="text-xs font-schematic text-[#cbba9d] flex items-center gap-1.5 mt-0.5">
+                        <Building2 className="w-3.5 h-3.5 text-brass" />
+                        {exp.company}
+                      </span>
+                    </div>
+
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-schematic uppercase tracking-wider ${
+                      exp.current
+                        ? 'bg-[#291e12] border border-steamAmber-glow/60 text-steamAmber-bright shadow-sm'
+                        : 'bg-[#1a140f] border border-brass-dark/50 text-[#a89680]'
+                    }`}>
+                      {exp.current ? 'Em Atividade' : 'Concluído'}
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-[#cfbfab] font-light leading-relaxed mt-3 pt-3 border-t border-brass-dark/30">
+                    {exp.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Certificações Técnicas Oficiais */}
+        {profileData.certifications && profileData.certifications.length > 0 && (
+          <div className="mt-10 pt-8 border-t border-brass-dark/40">
+            <span className="text-xs font-schematic uppercase tracking-widest text-copper-light mb-4 block">
+              Certificações & Habilitações Oficiais
+            </span>
+            <div className="flex flex-wrap gap-3">
+              {profileData.certifications.map((cert, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center gap-2 px-3 py-1.5 rounded bg-[#18130e] border border-brass-dark/60 text-xs font-schematic text-brass-light hover:border-brass-light/80 transition-all"
+                >
+                  <Award className="w-3.5 h-3.5 text-steamAmber-glow" />
+                  <span>{cert.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
       </div>
     </section>

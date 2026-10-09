@@ -55,7 +55,7 @@ export const Navbar = () => {
 
             <div className="flex flex-col">
               <span className="font-cinzel font-bold text-sm sm:text-base tracking-wider text-brass-gradient uppercase">
-                Gustavo R. dos Santos
+                {profileData.personal.name}
               </span>
               <span className="text-[10px] font-schematic tracking-widest text-copper-light flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-steamAmber-glow animate-pulse"></span>

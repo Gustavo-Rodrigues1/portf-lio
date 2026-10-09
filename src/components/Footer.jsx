@@ -28,7 +28,7 @@ export const Footer = () => {
               {profileData.personal.name}
             </span>
             <span className="text-xs font-schematic text-copper-light mt-0.5">
-              Bacharel em Sistemas de Informação • Universidade Federal de Sergipe (UFS)
+              {profileData.personal.title} ({profileData.academic.period}) • {profileData.personal.university}
             </span>
           </div>
 

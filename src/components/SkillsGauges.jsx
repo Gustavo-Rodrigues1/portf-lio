@@ -7,7 +7,7 @@ import { Wrench, Gauge, Flame, Check } from 'lucide-react';
 export const SkillsGauges = () => {
   const [selectedCategory, setSelectedCategory] = useState('Todas');
 
-  const categories = ['Todas', 'Frontend', 'Backend', 'Banco de Dados', 'DevOps', 'Fundamentos UFS'];
+  const categories = ['Todas', ...Array.from(new Set(profileData.skills.map((s) => s.category)))];
 
   const filteredSkills = selectedCategory === 'Todas'
     ? profileData.skills
