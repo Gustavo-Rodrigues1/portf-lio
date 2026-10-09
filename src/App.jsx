@@ -1,5 +1,6 @@
 import React from 'react';
 import { Navbar } from './components/Navbar';
+import { SteampunkSidebar } from './components/SteampunkSidebar';
 import { Hero } from './components/Hero';
 import { AboutUFS } from './components/AboutUFS';
 import { SkillsGauges } from './components/SkillsGauges';
@@ -10,8 +11,11 @@ import { Footer } from './components/Footer';
 function App() {
   return (
     <div className="min-h-screen bg-steampunk-darkest text-[#dfd2be] flex flex-col selection:bg-brass selection:text-steampunk-darkest">
-      {/* Barra de Navegação Mecânica Fixa */}
+      {/* Barra de Navegação Mecânica Fixa Superior */}
       <Navbar />
+
+      {/* Barra Lateral Mecânica com Engrenagem de Rolagem Interativa */}
+      <SteampunkSidebar />
 
       {/* Conteúdo Principal */}
       <main className="flex-grow">

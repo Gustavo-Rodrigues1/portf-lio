@@ -8,21 +8,15 @@
     --amber-glow: rgba(255, 157, 46, 0.6);
   }
 
-  /* Custom Steampunk Scrollbar */
+  /* Ocultar barra de rolagem nativa do navegador para utilizar exclusivamente a barra lateral Steampunk */
+  html, body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE e Edge */
+  }
   ::-webkit-scrollbar {
-    width: 10px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #0d0b09;
-    border-left: 1px solid #33271c;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #c69c4d 0%, #7e4518 100%);
-    border-radius: 2px;
-    border: 1px solid #23190f;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #f1d289 0%, #b87333 100%);
+    display: none; /* Chrome, Safari, Opera e novo Edge */
+    width: 0;
+    height: 0;
   }
 }
 

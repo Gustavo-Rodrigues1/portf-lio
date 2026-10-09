@@ -10,8 +10,14 @@ export const SteampunkGear = ({
   speed = 'spin-slow',
   color = 'brass', // 'brass' | 'copper' | 'iron'
   className = '',
+  style = {},
+  rotation = null,
   onClick,
 }) => {
+  const instanceId = React.useId ? React.useId().replace(/:/g, '') : color;
+  const gearGradId = `gear-grad-${color}-${instanceId}`;
+  const hubGradId = `hub-grad-${color}-${instanceId}`;
+
   const colorSchemes = {
     brass: {
       outer: '#d4a853',
@@ -65,23 +71,28 @@ export const SteampunkGear = ({
   // Furos no corpo da engrenagem (típico estilo relógio de bolso vitoriano)
   const holeAngles = [0, 60, 120, 180, 240, 300];
 
+  const hasCustomRotation = rotation !== null && rotation !== undefined;
+  const animClass = hasCustomRotation || !speed ? '' : `animate-${speed}`;
+  const rotationStyle = hasCustomRotation ? { transform: `rotate(${rotation}deg)` } : {};
+
   return (
     <div
       onClick={onClick}
-      style={{ width: size, height: size }}
-      className={`inline-block select-none transition-transform duration-500 ${className}`}
+      style={{ width: size, height: size, ...style }}
+      className={`inline-block select-none ${hasCustomRotation ? '' : 'transition-transform duration-500'} ${className}`}
     >
       <svg
         viewBox="0 0 100 100"
-        className={`w-full h-full drop-shadow-md animate-${speed}`}
+        style={rotationStyle}
+        className={`w-full h-full drop-shadow-md ${animClass}`}
       >
         <defs>
-          <radialGradient id={`gear-grad-${color}`} cx="40%" cy="40%" r="60%">
+          <radialGradient id={gearGradId} cx="40%" cy="40%" r="60%">
             <stop offset="0%" stopColor={c.rim} />
             <stop offset="60%" stopColor={c.outer} />
             <stop offset="100%" stopColor={c.inner} />
           </radialGradient>
-          <radialGradient id={`hub-grad-${color}`} cx="35%" cy="35%" r="65%">
+          <radialGradient id={hubGradId} cx="35%" cy="35%" r="65%">
             <stop offset="0%" stopColor={c.accent} />
             <stop offset="70%" stopColor={c.hub} />
             <stop offset="100%" stopColor="#120e09" />
@@ -96,7 +107,7 @@ export const SteampunkGear = ({
           cx={center}
           cy={center}
           r={radius}
-          fill={`url(#gear-grad-${color})`}
+          fill={`url(#${gearGradId})`}
           stroke={c.rim}
           strokeWidth="1.5"
         />
@@ -130,7 +141,7 @@ export const SteampunkGear = ({
           cx={center}
           cy={center}
           r="12"
-          fill={`url(#hub-grad-${color})`}
+          fill={`url(#${hubGradId})`}
           stroke={c.accent}
           strokeWidth="1.2"
         />
