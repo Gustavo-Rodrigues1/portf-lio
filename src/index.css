@@ -1,0 +1,127 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --brass-glow: rgba(198, 156, 77, 0.5);
+    --amber-glow: rgba(255, 157, 46, 0.6);
+  }
+
+  /* Custom Steampunk Scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0d0b09;
+    border-left: 1px solid #33271c;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #c69c4d 0%, #7e4518 100%);
+    border-radius: 2px;
+    border: 1px solid #23190f;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #f1d289 0%, #b87333 100%);
+  }
+}
+
+@layer utilities {
+  /* Metallic Text Gradients */
+  .text-brass-gradient {
+    background: linear-gradient(135deg, #f1d289 0%, #c69c4d 50%, #85621e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-copper-gradient {
+    background: linear-gradient(135deg, #f4ba87 0%, #b87333 50%, #70360d 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-amber-glow {
+    text-shadow: 0 0 10px rgba(255, 157, 46, 0.7), 0 0 25px rgba(255, 120, 0, 0.4);
+  }
+
+  /* Steampunk Riveted Panel */
+  .steampunk-panel {
+    background: radial-gradient(circle at 50% 0%, #201a14 0%, #120e0b 80%, #0a0807 100%);
+    border: 2px solid #574129;
+    box-shadow: 
+      0 12px 35px -5px rgba(0, 0, 0, 0.9),
+      inset 0 1px 2px rgba(241, 210, 137, 0.25),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.9),
+      0 0 0 1px #221810;
+    position: relative;
+  }
+
+  /* Embossed Brass Plate */
+  .brass-plate {
+    background: linear-gradient(180deg, #3d2f1e 0%, #251b11 50%, #19120b 100%);
+    border: 1px solid #7a5c2f;
+    box-shadow: 
+      inset 0 1px 0 rgba(241, 210, 137, 0.35),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.8),
+      0 4px 12px rgba(0, 0, 0, 0.6);
+  }
+
+  /* Mechanical Rivet Simulation */
+  .rivet-corner::before,
+  .rivet-corner::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #f1d289, #7a5a22 60%, #1f1406 100%);
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9), inset 0 0 1px #fff;
+  }
+}
+
+/* Background Industrial Grid & Gear Watermark Pattern */
+.steampunk-bg-pattern {
+  background-color: #0c0a08;
+  background-image: 
+    radial-gradient(rgba(198, 156, 77, 0.07) 1px, transparent 1px),
+    linear-gradient(to right, rgba(69, 53, 38, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(69, 53, 38, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px, 48px 48px, 48px 48px;
+}
+
+/* Mechanical Button Click Style */
+.btn-steampunk {
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background: linear-gradient(180deg, #433320 0%, #2a1f13 60%, #1d150c 100%);
+  border: 1px solid #8e6c38;
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.7),
+    inset 0 1px 1px rgba(241, 210, 137, 0.4),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.btn-steampunk:hover {
+  background: linear-gradient(180deg, #574229 0%, #3a2b1b 60%, #261c10 100%);
+  border-color: #d8af5c;
+  box-shadow: 
+    0 6px 20px rgba(198, 156, 77, 0.35),
+    inset 0 1px 2px rgba(255, 235, 179, 0.5),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.8);
+  transform: translateY(-1px);
+}
+
+.btn-steampunk:active {
+  transform: translateY(2px);
+  box-shadow: 
+    0 1px 4px rgba(0, 0, 0, 0.9),
+    inset 0 2px 6px rgba(0, 0, 0, 0.95);
+}
+
+/* Brass Gauge Styling */
+.gauge-face {
+  background: radial-gradient(circle at 45% 45%, #f7f1e1 0%, #e2d2b0 65%, #9e8a60 100%);
+  box-shadow: 
+    inset 0 0 12px rgba(78, 56, 26, 0.7),
+    inset 0 0 25px rgba(0, 0, 0, 0.4);
+}
