@@ -49,7 +49,7 @@ export const ProjectsArchive = () => {
           <div className="flex items-center justify-center gap-3 mb-6">
             <span className="h-px w-12 bg-brass/60"></span>
             <span className="text-copper-light text-xs font-schematic uppercase tracking-widest">
-              Engenharia • Sistemas de Informação UFS
+              Engenharia de Software • Soluções Web & TI
             </span>
             <span className="h-px w-12 bg-brass/60"></span>
           </div>

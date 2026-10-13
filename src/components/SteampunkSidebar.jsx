@@ -19,8 +19,8 @@ export const SteampunkSidebar = () => {
 
   const sections = [
     { id: 'hero', label: 'Início', roman: 'I', desc: 'Convés Principal' },
-    { id: 'sobre', label: 'Trajetória UFS', roman: 'II', desc: 'Formação Acadêmica' },
-    { id: 'habilidades', label: 'Habilidades', roman: 'III', desc: 'Manômetros Técnicos' },
+    { id: 'experiencia', label: 'Experiência', roman: 'II', desc: 'Atuação Profissional' },
+    { id: 'habilidades', label: 'Habilidades', roman: 'III', desc: 'Insígnias Técnicas' },
     { id: 'projetos', label: 'Projetos', roman: 'IV', desc: 'Arquivo de Patentes' },
     { id: 'contato', label: 'Contato', roman: 'V', desc: 'Central Telegráfica' },
   ];
@@ -285,22 +285,12 @@ export const SteampunkSidebar = () => {
           </div>
         </div>
 
-        {/* Mostrador Digital de Porcentagem & Ejetor de Vapor ao Topo */}
-        <div className="flex flex-col items-center mt-2 pt-2 border-t border-brass-dark/40 w-full gap-1.5">
-          {/* Manômetro de porcentagem */}
-          <div className={`px-1.5 py-0.5 rounded border text-center w-full transition-all ${
-            isDragging ? 'bg-[#1e150d] border-brass shadow-[0_0_8px_rgba(255,157,46,0.5)]' : 'bg-[#0e0b08] border-brass-dark/60'
-          }`}>
-            <span className="text-[9px] sm:text-[10px] font-schematic font-bold text-steamAmber-bright">
-              {Math.round(scrollProgress * 100)}%
-            </span>
-          </div>
-
-          {/* Botão de Retornar ao Topo com Estilo Steampunk */}
+        {/* Botão de Retornar ao Topo com Estilo Steampunk */}
+        <div className="flex flex-col items-center mt-2 pt-2 border-t border-brass-dark/40 w-full">
           <button
             type="button"
             onClick={scrollToTop}
-            title="Ejetar vapor e retornar ao topo"
+            title="Retornar ao topo"
             className="w-7 h-7 sm:w-8 sm:h-8 rounded-full btn-steampunk flex items-center justify-center text-brass-light hover:text-white transition-all hover:scale-105 active:scale-95 shadow-md"
           >
             <ChevronUp className="w-4 h-4 text-brass-light" />

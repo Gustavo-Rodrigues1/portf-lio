@@ -19,13 +19,13 @@ function App() {
 
       {/* Conteúdo Principal */}
       <main className="flex-grow">
-        {/* Seção Hero: Apresentação, UFS e Manômetro Interativo */}
+        {/* Seção Hero: Apresentação, Retrato Mecânico e Manômetro Interativo */}
         <Hero />
 
-        {/* Seção Sobre Mim & Matriz Acadêmica UFS */}
+        {/* Seção Atuação Profissional & Certificações */}
         <AboutUFS />
 
-        {/* Seção Mostradores de Habilidades (Gauges de Pressão) */}
+        {/* Seção Insígnias de Habilidades Técnicas */}
         <SkillsGauges />
 
         {/* Seção Arquivo de Patentes & Projetos do GitHub */}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { SteampunkGear } from './SteampunkGear';
 import { GithubIcon, LinkedinIcon } from './SocialIcons';
 import { profileData } from '../data/profile';
-import { Mail, Menu, X, Radio } from 'lucide-react';
+import { Mail, Menu, X } from 'lucide-react';
 
 export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -18,7 +18,7 @@ export const Navbar = () => {
 
   const navLinks = [
     { name: 'Início', href: '#hero' },
-    { name: 'Trajetória UFS', href: '#sobre' },
+    { name: 'Experiência', href: '#experiencia' },
     { name: 'Habilidades', href: '#habilidades' },
     { name: 'Projetos GitHub', href: '#projetos' },
     { name: 'Contato', href: '#contato' },
@@ -57,10 +57,6 @@ export const Navbar = () => {
               <span className="font-cinzel font-bold text-sm sm:text-base tracking-wider text-brass-gradient uppercase">
                 {profileData.personal.name}
               </span>
-              <span className="text-[10px] font-schematic tracking-widest text-copper-light flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-steamAmber-glow animate-pulse"></span>
-                Sistemas de Informação • UFS
-              </span>
             </div>
           </a>
 
@@ -80,11 +76,6 @@ export const Navbar = () => {
 
           {/* Ações e Conexões Externas */}
           <div className="hidden sm:flex items-center gap-3">
-            {/* Status Indicador a Vapor */}
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1 rounded-sm bg-[#1b1510] border border-brass-dark/60 text-[11px] font-schematic text-brass-light shadow-inner">
-              <Radio className="w-3.5 h-3.5 text-steamAmber-glow animate-pulse" />
-              <span>VAPOR: NOMINAL</span>
-            </div>
 
             {/* Link GitHub */}
             <a

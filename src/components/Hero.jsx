@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SteampunkGear } from './SteampunkGear';
 import { SteamGauge } from './SteamGauge';
 import { profileData } from '../data/profile';
-import { Flame, ArrowDown, ExternalLink, Sparkles, Compass, Camera } from 'lucide-react';
+import { Flame, ArrowDown, ExternalLink, Compass, Camera } from 'lucide-react';
 
 export const Hero = () => {
   const [steamPressure, setSteamPressure] = useState(78);
@@ -123,17 +123,17 @@ export const Hero = () => {
                 </div>
               </div>
 
-              {/* Títulos e Selo Acadêmico */}
+              {/* Títulos e Selo */}
               <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
-                {/* Selo UFS Superior */}
+                {/* Selo de Engenharia & TI */}
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[#221a13] border border-brass-dark shadow-md mb-2.5">
                   <Compass className="w-3.5 h-3.5 text-copper-light animate-spin-slow" />
                   <span className="font-schematic text-xs font-bold tracking-wider text-brass-light uppercase">
-                    {profileData.personal.university}
+                    Engenharia de Software & TI
                   </span>
                   <span className="text-brass-dark">•</span>
                   <span className="text-[10px] font-schematic text-[#cbba9d]">
-                    {profileData.academic.period}
+                    {profileData.personal.location}
                   </span>
                 </div>
 
@@ -156,23 +156,6 @@ export const Hero = () => {
             <p className="text-sm sm:text-base text-[#cfbfab] leading-relaxed mb-8 max-w-2xl font-light">
               {profileData.personal.bio}
             </p>
-
-            {/* Destaque Steampunk da UFS */}
-            <div className="steampunk-panel p-4 rounded-sm border border-brass-dark/70 mb-8 w-full max-w-xl">
-              <div className="flex items-start gap-3">
-                <div className="p-2 rounded bg-brass-dark/30 text-brass-light mt-1">
-                  <Sparkles className="w-4 h-4 text-steamAmber-bright" />
-                </div>
-                <div>
-                  <h3 className="font-celt text-xs font-bold tracking-widest text-brass-light uppercase mb-1">
-                    Diretriz da Forja Acadêmica
-                  </h3>
-                  <p className="text-xs text-[#b8a994] font-schematic leading-relaxed">
-                    "Alinhar a arquitetura sistêmica, modelagem de banco de dados e gestão tecnológica com código limpo e soluções robustas de engenharia."
-                  </p>
-                </div>
-              </div>
-            </div>
 
             {/* Botões de Ação Mecânicos */}
             <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
@@ -220,7 +203,7 @@ export const Hero = () => {
                   Caldeira de Engenharia de Software
                 </span>
                 <p className="text-[10px] font-schematic text-copper-light">
-                  Módulo Propulsor • SI - UFS
+                  Módulo Propulsor • Soluções Web & TI
                 </p>
               </div>
 
@@ -258,7 +241,7 @@ export const Hero = () => {
 
                 <div className="flex items-center justify-between w-full text-[11px] font-schematic text-[#a89680]">
                   <span>{profileData.personal.location}</span>
-                  <span className="text-brass">UFS ({profileData.academic.period})</span>
+                  <span className="text-brass">TI & Desenvolvimento Web</span>
                 </div>
               </div>
 
@@ -267,7 +250,7 @@ export const Hero = () => {
             {/* Pequenos Manômetros / Indicadores de Estatísticas */}
             <div className="grid grid-cols-3 gap-3 w-full max-w-md mt-4">
               <div className="steampunk-panel p-2.5 rounded text-center border border-brass-dark/40">
-                <span className="font-cinzel text-base font-bold text-brass-light">UFS</span>
+                <span className="font-cinzel text-base font-bold text-brass-light">Web</span>
                 <p className="text-[9px] font-schematic text-[#ab9a83] uppercase mt-0.5">Sistemas</p>
               </div>
               <div className="steampunk-panel p-2.5 rounded text-center border border-brass-dark/40">

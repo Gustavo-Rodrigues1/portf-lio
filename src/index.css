@@ -194,3 +194,18 @@
 .animate-capsule-tube    { animation: capsule-into-tube 1.2s cubic-bezier(0.4,0,0.6,1) forwards; }
 .animate-steam-puff      { animation: steam-puff 1s ease-out forwards; }
 .animate-tube-pressure   { animation: tube-pressure 0.8s ease-in-out infinite; }
+
+/* 9. Carta / Envelope flutuando suavemente em 3D */
+@keyframes float-letter {
+  0%, 100% {
+    transform: translateY(0px) rotate(-3deg);
+  }
+  50% {
+    transform: translateY(-16px) rotate(-1deg);
+  }
+}
+
+.animate-float-letter {
+  animation: float-letter 4s ease-in-out infinite;
+}
+

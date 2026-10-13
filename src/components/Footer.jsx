@@ -2,7 +2,7 @@ import React from 'react';
 import { SteampunkGear } from './SteampunkGear';
 import { GithubIcon, LinkedinIcon } from './SocialIcons';
 import { profileData } from '../data/profile';
-import { ArrowUp, Heart, Shield } from 'lucide-react';
+import { ArrowUp } from 'lucide-react';
 
 export const Footer = () => {
   const scrollToTop = () => {
@@ -22,13 +22,10 @@ export const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-brass-dark/40">
           
-          {/* Logo & Titulação */}
+          {/* Logo / Nome */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left">
             <span className="font-cinzel text-base sm:text-lg font-bold text-brass-gradient uppercase tracking-wider">
               {profileData.personal.name}
-            </span>
-            <span className="text-xs font-schematic text-copper-light mt-0.5">
-              {profileData.personal.title} ({profileData.academic.period}) • {profileData.personal.university}
             </span>
           </div>
 
@@ -66,18 +63,10 @@ export const Footer = () => {
 
         </div>
 
-        {/* Linha de Copyright & Reconhecimento */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-schematic text-[#85745f]">
+        {/* Linha de Copyright */}
+        <div className="mt-8 flex items-center justify-center sm:justify-start text-xs font-schematic text-[#85745f]">
           <p>
             © {new Date().getFullYear()} {profileData.personal.name}. Todos os direitos das patentes reservados.
-          </p>
-
-          <p className="flex items-center gap-1.5 text-center">
-            <span>Construído a vapor com</span>
-            <span className="text-copper-light font-bold">React</span>
-            <span>&</span>
-            <span className="text-brass-light font-bold">Tailwind CSS</span>
-            <span>• São Cristóvão / SE</span>
           </p>
         </div>
 

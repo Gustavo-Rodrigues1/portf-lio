@@ -1,629 +1,290 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { profileData } from '../data/profile';
 import { SteampunkGear } from './SteampunkGear';
 import { GithubIcon, LinkedinIcon } from './SocialIcons';
 import {
-  Radio,
   Mail,
   Phone,
   MapPin,
-  Send,
   Copy,
   Check,
-  Flame,
-  CheckCircle2,
-  Wind,
+  ExternalLink,
+  MessageSquare
 } from 'lucide-react';
 
-/* =========================================================
-   SEQUÊNCIA DE ANIMAÇÃO AO ENVIAR A CARTA:
-   Phase 0 = idle (formulário visível)
-   Phase 1 = folding (carta dobra em 1.1s)
-   Phase 2 = stamping (carimbo de cera cai em ~0.9s)
-   Phase 3 = capsule (envelope encapsulado aparece)
-   Phase 4 = tube (cápsula entra no tubo e some)
-   Phase 5 = done (mensagem de sucesso)
-   ========================================================= */
-
-// SVG da carta em papel envelhecido (pergaminho vitoriano)
-const LetterSVG = ({ nome, email, assunto, mensagem }) => (
-  <svg viewBox="0 0 300 200" className="w-full" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="paperGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stopColor="#f5edd8" />
-        <stop offset="50%" stopColor="#ecdfc4" />
-        <stop offset="100%" stopColor="#dfd0ad" />
-      </linearGradient>
-      <filter id="paperNoise">
-        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" />
-        <feColorMatrix type="saturate" values="0" in="noise" result="grayNoise" />
-        <feBlend in="SourceGraphic" in2="grayNoise" mode="multiply" result="blended" />
-        <feComposite in="blended" in2="SourceGraphic" operator="in" />
-      </filter>
-    </defs>
-    {/* Corpo do papel */}
-    <rect x="10" y="10" width="280" height="180" rx="4" fill="url(#paperGrad)" stroke="#b8993f" strokeWidth="1.5" filter="url(#paperNoise)" />
-    {/* Dobra superior esquerda */}
-    <polygon points="10,10 40,10 10,40" fill="#d4c09a" stroke="#b8993f" strokeWidth="0.5" />
-    {/* Linhas pautadas */}
-    {[50, 68, 86, 104, 122, 140, 158, 176].map((y, i) => (
-      <line key={i} x1="25" y1={y} x2="275" y2={y} stroke="#c8a96e" strokeWidth="0.5" opacity="0.5" />
-    ))}
-    {/* Título / Remetente */}
-    <text x="150" y="30" textAnchor="middle" fontFamily="Courier Prime, monospace" fontSize="9" fill="#6b4a1c" fontWeight="bold" letterSpacing="2">
-      DESPACHO TELEGRÁFICO
-    </text>
-    <line x1="25" y1="36" x2="275" y2="36" stroke="#9a7230" strokeWidth="1.2" />
-    {/* Para */}
-    <text x="25" y="50" fontFamily="Courier Prime, monospace" fontSize="7.5" fill="#5a3a10">Para: Gustavo Rodrigues  •  UFS/SECOM</text>
-    {/* De */}
-    <text x="25" y="64" fontFamily="Courier Prime, monospace" fontSize="7.5" fill="#5a3a10">De: {(nome || 'Remetente').substring(0, 30)}</text>
-    {/* Email */}
-    <text x="25" y="77" fontFamily="Courier Prime, monospace" fontSize="6.5" fill="#7a5a28">{(email || 'email@destinatário').substring(0, 38)}</text>
-    <line x1="25" y1="84" x2="275" y2="84" stroke="#c8a96e" strokeWidth="0.8" />
-    {/* Assunto */}
-    <text x="25" y="97" fontFamily="Courier Prime, monospace" fontSize="8" fill="#4a2e0a" fontWeight="bold">Assunto: {(assunto || '—').substring(0, 28)}</text>
-    {/* Mensagem */}
-    <foreignObject x="25" y="102" width="250" height="70">
-      <div xmlns="http://www.w3.org/1999/xhtml"
-        style={{ fontFamily: 'Courier Prime, monospace', fontSize: '7.5px', color: '#3d2608', lineHeight: '14px', wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>
-        {(mensagem || '').substring(0, 180)}
-      </div>
-    </foreignObject>
-    {/* Assinatura */}
-    <line x1="25" y1="178" x2="160" y2="178" stroke="#c8a96e" strokeWidth="0.7" />
-    <text x="25" y="188" fontFamily="Courier Prime, monospace" fontSize="6.5" fill="#7a5a28" fontStyle="italic">Enviado via Terminal Telegráfico Steampunk</text>
+/**
+ * Ícone Oficial do WhatsApp
+ */
+const WhatsAppIcon = ({ className = "w-5 h-5" }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2zm5.82 14.1c-.24.68-1.4 1.26-1.92 1.31-.49.05-1.12.08-3.62-.96-3.19-1.33-5.23-4.57-5.39-4.78-.16-.21-1.3-1.73-1.3-3.3 0-1.57.82-2.34 1.11-2.66.29-.32.63-.4.85-.4.21 0 .43.01.61.02.2.01.46-.07.72.55.26.63.89 2.18.97 2.34.08.16.13.35.03.56-.11.21-.16.35-.32.53-.16.19-.34.42-.48.56-.16.16-.33.34-.14.66.19.32.84 1.38 1.8 2.24 1.24 1.1 2.29 1.45 2.61 1.61.32.16.51.13.7-.08.19-.21.82-.95 1.04-1.28.21-.32.43-.27.72-.16.29.11 1.84.87 2.16 1.03.32.16.53.24.61.37.08.13.08.77-.16 1.45z" />
   </svg>
 );
 
-// SVG do carimbo de cera lacrado (lacre vermelho vitoriano)
-const WaxSealSVG = ({ className = '' }) => (
-  <svg viewBox="0 0 80 80" className={`w-full h-full ${className}`} xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <radialGradient id="waxGrad" cx="40%" cy="35%" r="60%">
-        <stop offset="0%" stopColor="#e84040" />
-        <stop offset="55%" stopColor="#9e1212" />
-        <stop offset="100%" stopColor="#5c0606" />
-      </radialGradient>
-      <radialGradient id="waxShine" cx="35%" cy="30%" r="50%">
-        <stop offset="0%" stopColor="rgba(255,200,200,0.55)" />
-        <stop offset="100%" stopColor="rgba(255,80,80,0)" />
-      </radialGradient>
-    </defs>
-    {/* Gotas de cera espalhadas */}
-    <ellipse cx="40" cy="42" rx="30" ry="6" fill="#7a0e0e" opacity="0.3" />
-    {/* Gota principal */}
-    <polygon points="40,10 55,20 60,38 40,50 20,38 25,20" fill="url(#waxGrad)" stroke="#6b0e0e" strokeWidth="1" />
-    <polygon points="40,10 52,16 58,32 40,46 22,32 28,16" fill="url(#waxGrad)" />
-    {/* Círculo central do lacre */}
-    <circle cx="40" cy="30" r="15" fill="url(#waxGrad)" stroke="#6b0808" strokeWidth="1.5" />
-    <circle cx="40" cy="30" r="15" fill="url(#waxShine)" />
-    {/* Inicial "G" gravada */}
-    <text x="40" y="35" textAnchor="middle" fontFamily="Cinzel, serif" fontSize="13" fill="#e8a0a0" fontWeight="bold" opacity="0.9">G</text>
-    {/* Relevo do anel de lacre */}
-    <circle cx="40" cy="30" r="15" fill="none" stroke="rgba(255,160,160,0.3)" strokeWidth="2" />
-    <circle cx="40" cy="30" r="12" fill="none" stroke="rgba(100,10,10,0.6)" strokeWidth="0.7" />
-  </svg>
-);
+/**
+ * Selo / Adesivo de Cera Vitoriano Steampunk
+ */
+const WaxSeal = ({ className = "w-20 h-20" }) => (
+  <div className={`relative flex items-center justify-center ${className} filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.85)] animate-wax-shine`}>
+    <svg viewBox="0 0 100 100" className="w-full h-full">
+      <defs>
+        {/* Gradiente da Cera Escarlate */}
+        <radialGradient id="waxRedGrad" cx="38%" cy="32%" r="65%">
+          <stop offset="0%" stopColor="#f84b4b" />
+          <stop offset="35%" stopColor="#c51616" />
+          <stop offset="70%" stopColor="#7e0808" />
+          <stop offset="100%" stopColor="#460404" />
+        </radialGradient>
 
-// SVG da cápsula de tubo pneumático (metal/latão)
-const CapsuleSVG = () => (
-  <svg viewBox="0 0 120 60" className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="capsuleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#f1d289" />
-        <stop offset="40%" stopColor="#c69c4d" />
-        <stop offset="70%" stopColor="#8a6523" />
-        <stop offset="100%" stopColor="#5a3f0f" />
-      </linearGradient>
-      <linearGradient id="capsuleEnd" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stopColor="#e0b455" />
-        <stop offset="100%" stopColor="#9e7428" />
-      </linearGradient>
-      <linearGradient id="glassPart" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="rgba(200,235,255,0.55)" />
-        <stop offset="50%" stopColor="rgba(150,200,240,0.25)" />
-        <stop offset="100%" stopColor="rgba(100,160,220,0.15)" />
-      </linearGradient>
-    </defs>
-    {/* Corpo da cápsula (latão) */}
-    <rect x="20" y="8" width="80" height="44" rx="22" fill="url(#capsuleGrad)" stroke="#8a6523" strokeWidth="1.5" />
-    {/* Janela de vidro central */}
-    <rect x="38" y="14" width="44" height="32" rx="4" fill="url(#glassPart)" stroke="rgba(200,180,100,0.6)" strokeWidth="1" />
-    {/* Miniatura da carta dentro da cápsula */}
-    <rect x="44" y="18" width="32" height="24" rx="2" fill="#f0e5c8" stroke="#c8a96e" strokeWidth="0.7" />
-    <line x1="48" y1="24" x2="72" y2="24" stroke="#b89040" strokeWidth="0.8" opacity="0.7" />
-    <line x1="48" y1="28" x2="72" y2="28" stroke="#b89040" strokeWidth="0.6" opacity="0.5" />
-    <line x1="48" y1="32" x2="68" y2="32" stroke="#b89040" strokeWidth="0.6" opacity="0.5" />
-    {/* Lacre vermelho sobre a carta mini */}
-    <circle cx="60" cy="36" r="4" fill="#9e1212" stroke="#6b0808" strokeWidth="0.5" />
-    <text x="60" y="39" textAnchor="middle" fontFamily="Cinzel, serif" fontSize="4.5" fill="#e8a0a0" fontWeight="bold">G</text>
-    {/* Tampa esquerda */}
-    <ellipse cx="20" cy="30" rx="10" ry="22" fill="url(#capsuleEnd)" stroke="#7a5a1a" strokeWidth="1.2" />
-    <ellipse cx="20" cy="30" rx="6" ry="16" fill="none" stroke="rgba(255,220,140,0.4)" strokeWidth="1" />
-    {/* Tampa direita */}
-    <ellipse cx="100" cy="30" rx="10" ry="22" fill="url(#capsuleEnd)" stroke="#7a5a1a" strokeWidth="1.2" />
-    <ellipse cx="100" cy="30" rx="6" ry="16" fill="none" stroke="rgba(255,220,140,0.4)" strokeWidth="1" />
-    {/* Reflexo de luz */}
-    <rect x="38" y="14" width="44" height="10" rx="4" fill="rgba(255,255,255,0.15)" />
-    {/* Rebites laterais */}
-    <circle cx="30" cy="30" r="2" fill="#f1d289" stroke="#8a6523" strokeWidth="0.8" />
-    <circle cx="90" cy="30" r="2" fill="#f1d289" stroke="#8a6523" strokeWidth="0.8" />
-  </svg>
-);
+        {/* Brilho da Cera */}
+        <radialGradient id="waxGlint" cx="30%" cy="25%" r="50%">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.7)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+        </radialGradient>
+      </defs>
 
-// SVG do tubo pneumático (cano de latão na horizontal)
-const TubeSVG = ({ active }) => (
-  <svg viewBox="0 0 320 60" className="w-full" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <linearGradient id="tubeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#f1d289" />
-        <stop offset="25%" stopColor="#c69c4d" />
-        <stop offset="70%" stopColor="#7a5010" />
-        <stop offset="100%" stopColor="#4a3008" />
-      </linearGradient>
-      <linearGradient id="tubeInner" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#201408" />
-        <stop offset="100%" stopColor="#0d0906" />
-      </linearGradient>
-    </defs>
-    {/* Tubo externo */}
-    <rect x="0" y="10" width="320" height="40" rx="20" fill="url(#tubeGrad)" stroke="#8a6523" strokeWidth="2" />
-    {/* Interior escuro do tubo */}
-    <rect x="8" y="16" width="304" height="28" rx="14" fill="url(#tubeInner)" />
-    {/* Reflexo de luz superior */}
-    <rect x="8" y="16" width="304" height="9" rx="9" fill="rgba(255,230,150,0.18)" />
-    {/* Rebites ao longo do tubo */}
-    {[40, 100, 160, 220, 280].map((x, i) => (
-      <g key={i}>
-        <circle cx={x} cy="10" r="4" fill="#c69c4d" stroke="#7a5010" strokeWidth="1" />
-        <circle cx={x} cy="50" r="4" fill="#c69c4d" stroke="#7a5010" strokeWidth="1" />
-      </g>
-    ))}
-    {/* Luz âmbar dentro do tubo quando ativo */}
-    {active && (
-      <rect x="8" y="16" width="304" height="28" rx="14" fill="rgba(255,157,46,0.12)"
-        style={{ animation: 'tube-pressure 0.8s ease-in-out infinite' }} />
-    )}
-    {/* Abertura direita do tubo */}
-    <ellipse cx="318" cy="30" rx="10" ry="20" fill="#1a0e06" stroke="#8a6523" strokeWidth="1.5" />
-    {/* Abertura esquerda do tubo */}
-    <ellipse cx="2" cy="30" rx="10" ry="20" fill="#1a0e06" stroke="#8a6523" strokeWidth="1.5" />
-  </svg>
+      {/* Gotas e contorno irregular de cera derretida */}
+      <path
+        d="M50 8 C68 6, 85 18, 91 35 C96 48, 93 64, 84 76 C74 88, 59 93, 44 91 C30 89, 14 83, 9 68 C4 54, 8 38, 17 26 C26 14, 37 9, 50 8 Z"
+        fill="url(#waxRedGrad)"
+        stroke="#520505"
+        strokeWidth="1.5"
+      />
+
+      {/* Borda interna gravada do anel de sinete */}
+      <circle cx="50" cy="50" r="32" fill="#880e0e" stroke="#500606" strokeWidth="2" opacity="0.9" />
+      <circle cx="50" cy="50" r="28" fill="url(#waxRedGrad)" stroke="#3e0303" strokeWidth="1" />
+
+      {/* Brilho de reflexo */}
+      <ellipse cx="40" cy="36" rx="14" ry="7" fill="url(#waxGlint)" transform="rotate(-25 40 36)" />
+
+      {/* Monograma / Brasão Central 'G' em Latão/Ouro em relevo */}
+      <text
+        x="50"
+        y="58"
+        textAnchor="middle"
+        fontFamily="Cinzel, serif"
+        fontSize="24"
+        fontWeight="bold"
+        fill="#f7dfa4"
+        stroke="#745116"
+        strokeWidth="0.8"
+        filter="drop-shadow(0 2px 3px rgba(0,0,0,0.8))"
+      >
+        G
+      </text>
+    </svg>
+  </div>
 );
 
 export const ContactTelegraph = () => {
-  const [formData, setFormData] = useState({
-    nome: '',
-    email: '',
-    assunto: '',
-    mensagem: '',
-  });
-  // phase: 'idle' | 'folding' | 'stamping' | 'capsule' | 'tube' | 'done'
-  const [phase, setPhase] = useState('idle');
   const [copiedField, setCopiedField] = useState(null);
-  // Dados da carta "congelados" no momento do envio, para exibir durante a animação
-  const [sentData, setSentData] = useState(null);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSentData({ ...formData });
-    setPhase('folding');
-  };
-
-  useEffect(() => {
-    if (phase === 'folding') {
-      // Após 1.2s a carta está dobrada → aplicar carimbo
-      const t1 = setTimeout(() => setPhase('stamping'), 1200);
-      return () => clearTimeout(t1);
-    }
-    if (phase === 'stamping') {
-      // Após 1s o lacre está aplicado → mostrar cápsula
-      const t2 = setTimeout(() => setPhase('capsule'), 1000);
-      return () => clearTimeout(t2);
-    }
-    if (phase === 'capsule') {
-      // Após 0.9s a cápsula apareceu → entra no tubo
-      const t3 = setTimeout(() => setPhase('tube'), 900);
-      return () => clearTimeout(t3);
-    }
-    if (phase === 'tube') {
-      // Após 1.5s a cápsula sumiu → mensagem de sucesso
-      const t4 = setTimeout(() => {
-        setPhase('done');
-        setFormData({ nome: '', email: '', assunto: '', mensagem: '' });
-      }, 1500);
-      return () => clearTimeout(t4);
-    }
-    if (phase === 'done') {
-      // Após 6s volta ao idle
-      const t5 = setTimeout(() => {
-        setPhase('idle');
-        setSentData(null);
-      }, 6000);
-      return () => clearTimeout(t5);
-    }
-  }, [phase]);
-
-  const handleCopy = (text, fieldName) => {
+  const handleCopy = (text, field) => {
     navigator.clipboard.writeText(text);
-    setCopiedField(fieldName);
+    setCopiedField(field);
     setTimeout(() => setCopiedField(null), 2000);
   };
-
-  const isSending = phase !== 'idle' && phase !== 'done';
-  const isDone = phase === 'done';
 
   return (
     <section
       id="contato"
-      className="relative py-24 steampunk-bg-pattern border-b-2 border-brass-dark/60 overflow-hidden"
+      className="relative py-24 bg-[#0a0807] border-b-2 border-brass-dark/60 overflow-hidden"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      {/* Engrenagens de Fundo Vitorianas */}
+      <div className="absolute top-10 -right-20 pointer-events-none opacity-10">
+        <SteampunkGear size={320} teeth={16} color="brass" speed="spin-slow" />
+      </div>
+      <div className="absolute -bottom-16 -left-16 pointer-events-none opacity-10">
+        <SteampunkGear size={240} teeth={12} color="copper" speed="spin-reverse-slow" />
+      </div>
 
-        {/* Cabeçalho da Seção */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#1e1711] border border-brass-dark/70 text-xs font-schematic text-brass-light mb-3">
-            <Radio className="w-4 h-4 text-steamAmber-glow animate-pulse" />
-            <span>TRANSMISSÃO TELEGRÁFICA &amp; CONEXÕES</span>
-          </div>
-          <h2 className="font-cinzel text-3xl sm:text-4xl lg:text-5xl font-bold text-brass-gradient tracking-wide mb-4">
-            Linhas de Comunicação
-          </h2>
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <span className="h-px w-12 bg-brass/60"></span>
-            <span className="text-copper-light text-xs font-schematic uppercase tracking-widest">
-              Conecte-se com Gustavo Rodrigues
-            </span>
-            <span className="h-px w-12 bg-brass/60"></span>
-          </div>
-          <p className="text-[#c5b59e] text-sm sm:text-base leading-relaxed">
-            Seja para oportunidades profissionais, desenvolvimento de sistemas, colaborações em projetos
-            ou apenas trocar uma ideia sobre tecnologia. Redija sua carta e eu a receberei pelo tubo pneumático.
-          </p>
-        </div>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* ════════════ COLUNA ESQUERDA: FALE COMIGO & CONTATOS ════════════ */}
+          <div className="lg:col-span-7 flex flex-col justify-center">
 
-          {/* ── Coluna Esquerda: Canais Oficiais ── */}
-          <div className="lg:col-span-5 space-y-4">
+            {/* Título Principal no Estilo do Modelo */}
+            <h2 className="font-cinzel text-4xl sm:text-5xl lg:text-6xl font-extrabold text-brass-gradient tracking-wide mb-8 drop-shadow-md">
+              Fale comigo!
+            </h2>
 
-            {/* Cartão LinkedIn */}
-            <div className="steampunk-panel p-5 rounded-lg border-2 border-brass-dark/70 hover:border-brass transition-all flex items-center justify-between group">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded bg-[#201913] border border-brass-dark flex items-center justify-center text-brass-light group-hover:scale-110 transition-transform shadow-inner">
-                  <LinkedinIcon className="w-6 h-6 text-steamAmber-bright" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-schematic text-copper-light uppercase tracking-wider block">Rede Profissional</span>
-                  <h3 className="font-cinzel text-sm sm:text-base font-bold text-brass-light">Perfil no LinkedIn</h3>
-                  <p className="text-xs text-[#a99781] font-schematic">{profileData.social.linkedin.label}</p>
-                </div>
-              </div>
-              <a href={profileData.social.linkedin.url} target="_blank" rel="noopener noreferrer"
-                className="btn-steampunk px-3 py-1.5 rounded text-xs font-schematic font-bold text-brass-light hover:text-white uppercase">
-                Acessar
-              </a>
-            </div>
-
-            {/* Cartão GitHub */}
-            <div className="steampunk-panel p-5 rounded-lg border-2 border-brass-dark/70 hover:border-brass transition-all flex items-center justify-between group">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded bg-[#201913] border border-brass-dark flex items-center justify-center text-brass-light group-hover:scale-110 transition-transform shadow-inner">
-                  <GithubIcon className="w-6 h-6 text-steamAmber-bright" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-schematic text-copper-light uppercase tracking-wider block">Repositórios &amp; Código</span>
-                  <h3 className="font-cinzel text-sm sm:text-base font-bold text-brass-light">GitHub Oficial</h3>
-                  <p className="text-xs text-[#a99781] font-schematic">{profileData.social.github.label}</p>
-                </div>
-              </div>
-              <a href={profileData.social.github.url} target="_blank" rel="noopener noreferrer"
-                className="btn-steampunk px-3 py-1.5 rounded text-xs font-schematic font-bold text-brass-light hover:text-white uppercase">
-                Acessar
-              </a>
-            </div>
-
-            {/* Cartão E-mail */}
-            <div className="steampunk-panel p-5 rounded-lg border-2 border-brass-dark/70 hover:border-brass transition-all flex items-center justify-between group">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded bg-[#201913] border border-brass-dark flex items-center justify-center text-brass-light group-hover:scale-110 transition-transform shadow-inner">
-                  <Mail className="w-6 h-6 text-steamAmber-bright" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-schematic text-copper-light uppercase tracking-wider block">Correio Eletrônico</span>
-                  <h3 className="font-cinzel text-sm sm:text-base font-bold text-brass-light">E-mail Direto</h3>
-                  <p className="text-xs text-[#a99781] font-schematic">{profileData.social.email.address}</p>
-                </div>
-              </div>
-              <button type="button" onClick={() => handleCopy(profileData.social.email.address, 'email')}
-                className="btn-steampunk p-2 rounded text-brass-light hover:text-white" title="Copiar E-mail">
-                {copiedField === 'email'
-                  ? <Check className="w-4 h-4 text-steamAmber-bright" />
-                  : <Copy className="w-4 h-4" />}
-              </button>
-            </div>
-
-            {/* Localização */}
-            <div className="steampunk-panel p-4 rounded-lg border border-brass-dark/60 text-xs font-schematic text-[#baaa94] flex items-center gap-3">
-              <MapPin className="w-5 h-5 text-copper-light flex-shrink-0" />
-              <div>
-                <span className="text-brass-light font-bold block">Base Operacional:</span>
-                <span>{profileData.personal.location} • Formação UFS</span>
-              </div>
-            </div>
-
-          </div>
-
-          {/* ── Coluna Direita: Terminal de Carta Steampunk ── */}
-          <div className="lg:col-span-7 steampunk-panel rounded-lg border-2 border-brass-dark/80 relative overflow-hidden">
-
-            {/* Rebites nos 4 cantos */}
-            <div className="absolute top-2 left-2 w-2 h-2 rounded-full bg-brass-light border border-black shadow z-10"></div>
-            <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-brass-light border border-black shadow z-10"></div>
-            <div className="absolute bottom-2 left-2 w-2 h-2 rounded-full bg-brass-light border border-black shadow z-10"></div>
-            <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-brass-light border border-black shadow z-10"></div>
-
-            {/* Placa do terminal */}
-            <div className="brass-plate p-2.5 mx-6 mt-6 mb-4 rounded text-center">
-              <span className="font-cinzel text-xs font-bold tracking-widest text-brass-light uppercase">
-                Terminal de Despacho Pneumático
+            {/* Redes Sociais com Caixas Mais Compactas */}
+            <div className="space-y-2.5 max-w-lg">
+              <span className="text-[11px] font-schematic uppercase tracking-widest text-copper-light block mb-1">
+                Conexões Oficiais
               </span>
-              <p className="text-[10px] font-schematic text-copper-light">
-                Redija sua carta • Ela será lacrada e enviada pelo tubo
-              </p>
-            </div>
 
-            {/* ── ÁREA DE ANIMAÇÃO + FORMULÁRIO ── */}
-            <div className="px-6 pb-6">
-
-              {/* FASE IDLE: Formulário em forma de carta */}
-              {phase === 'idle' && (
-                <form onSubmit={handleSubmit} className="relative">
-                  {/* Visual de papel / carta ao redor do formulário */}
-                  <div className="relative rounded-sm border-2 border-[#c8a96e] shadow-[inset_0_2px_8px_rgba(0,0,0,0.25),0_4px_16px_rgba(0,0,0,0.5)]"
-                    style={{ background: 'linear-gradient(160deg, #f5edd8 0%, #ecdfc4 50%, #dfd0ad 100%)' }}>
-
-                    {/* Dobra de papel no canto superior esquerdo */}
-                    <div className="absolute top-0 left-0 w-0 h-0"
-                      style={{ borderLeft: '28px solid #c8a96e', borderBottom: '28px solid transparent', zIndex: 2 }}></div>
-                    <div className="absolute top-0 left-0 w-0 h-0"
-                      style={{ borderLeft: '26px solid #e8d8b0', borderBottom: '26px solid transparent', zIndex: 3 }}></div>
-
-                    {/* Linhas de fundo do papel */}
-                    <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-sm">
-                      {[60, 90, 120, 150, 180, 210, 240, 270, 300, 330, 360].map((y, i) => (
-                        <div key={i} className="absolute w-full h-px" style={{ top: y, background: 'rgba(180,140,60,0.2)' }} />
-                      ))}
-                    </div>
-
-                    {/* Cabeçalho da carta */}
-                    <div className="relative z-1 px-6 pt-8 pb-2 border-b-2 border-[#c8a96e]/70">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-schematic text-[9px] font-bold text-[#6b4a1c] uppercase tracking-widest">
-                            Despacho Telegráfico Vitoriano
-                          </p>
-                          <p className="font-schematic text-[8px] text-[#8a6030]">Para: Gustavo Rodrigues · UFS/SECOM · Aracaju-SE</p>
-                        </div>
-                        {/* Espaço reservado para o lacre (aparece durante a animação) */}
-                        <div className="w-10 h-10 rounded-full border-2 border-dashed border-[#c8a96e]/60 flex items-center justify-center">
-                          <span className="text-[#c8a96e]/50 text-lg">⊙</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Campos do formulário com estilo de carta manuscrita */}
-                    <div className="px-6 py-4 space-y-3">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                          <label className="block font-schematic text-[9px] font-bold text-[#7a5220] uppercase tracking-wider mb-1">
-                            Remetente / Organização
-                          </label>
-                          <input
-                            type="text" name="nome" required value={formData.nome} onChange={handleChange}
-                            placeholder="Seu nome ou empresa"
-                            className="w-full bg-transparent border-b-2 border-[#c8a96e]/60 focus:border-[#8a6030] px-0 py-1 text-sm font-schematic text-[#3d2608] placeholder-[#b09060]/60 focus:outline-none transition-colors"
-                            style={{ fontFamily: 'Courier Prime, monospace' }}
-                          />
-                        </div>
-                        <div>
-                          <label className="block font-schematic text-[9px] font-bold text-[#7a5220] uppercase tracking-wider mb-1">
-                            E-mail de Retorno
-                          </label>
-                          <input
-                            type="email" name="email" required value={formData.email} onChange={handleChange}
-                            placeholder="seu@email.com"
-                            className="w-full bg-transparent border-b-2 border-[#c8a96e]/60 focus:border-[#8a6030] px-0 py-1 text-sm font-schematic text-[#3d2608] placeholder-[#b09060]/60 focus:outline-none transition-colors"
-                            style={{ fontFamily: 'Courier Prime, monospace' }}
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block font-schematic text-[9px] font-bold text-[#7a5220] uppercase tracking-wider mb-1">
-                          Assunto da Missiva
-                        </label>
-                        <input
-                          type="text" name="assunto" required value={formData.assunto} onChange={handleChange}
-                          placeholder="Ex: Proposta de projeto / Oportunidade em SI"
-                          className="w-full bg-transparent border-b-2 border-[#c8a96e]/60 focus:border-[#8a6030] px-0 py-1 text-sm font-schematic text-[#3d2608] placeholder-[#b09060]/60 focus:outline-none transition-colors"
-                          style={{ fontFamily: 'Courier Prime, monospace' }}
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block font-schematic text-[9px] font-bold text-[#7a5220] uppercase tracking-wider mb-1">
-                          Corpo da Carta
-                        </label>
-                        <textarea
-                          name="mensagem" rows={5} required value={formData.mensagem} onChange={handleChange}
-                          placeholder="Escreva aqui sua mensagem, proposta ou convite..."
-                          className="w-full bg-transparent border-b-2 border-[#c8a96e]/60 focus:border-[#8a6030] px-0 py-1 text-sm font-schematic text-[#3d2608] placeholder-[#b09060]/60 focus:outline-none resize-none transition-colors leading-relaxed"
-                          style={{ fontFamily: 'Courier Prime, monospace', backgroundImage: 'none' }}
-                        />
-                      </div>
-
-                      {/* Linha de assinatura */}
-                      <div className="border-t border-[#c8a96e]/50 pt-3 flex items-center justify-between">
-                        <span className="font-schematic text-[8px] text-[#8a6030] italic">
-                          Enviado via Terminal Telegráfico Steampunk
-                        </span>
-                        <button
-                          type="submit"
-                          className="flex items-center gap-2 px-5 py-2.5 rounded font-schematic text-xs font-bold uppercase tracking-wider text-brass-light hover:text-white transition-all hover:scale-105 active:scale-95"
-                          style={{
-                            background: 'linear-gradient(180deg, #574229 0%, #3a2b1b 60%, #261c10 100%)',
-                            border: '1px solid #c69c4d',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.7), inset 0 1px 1px rgba(241,210,137,0.4)',
-                          }}
-                        >
-                          <Send className="w-4 h-4 text-copper-light" />
-                          <span>Lacrar &amp; Despachar</span>
-                        </button>
-                      </div>
-                    </div>
+              {/* Caixa Compacta LinkedIn */}
+              <div className="steampunk-panel p-3 rounded-md border border-brass-dark/60 hover:border-brass transition-all flex items-center justify-between group">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded bg-[#1e1711] border border-brass-dark flex items-center justify-center text-brass-light group-hover:scale-105 transition-transform shadow-inner">
+                    <LinkedinIcon className="w-4 h-4 text-steamAmber-bright" />
                   </div>
-                </form>
-              )}
-
-              {/* FASE FOLDING: Carta dobrando */}
-              {phase === 'folding' && sentData && (
-                <div className="flex flex-col items-center justify-center py-4 min-h-[340px]">
-                  <div className="relative w-full max-w-sm animate-letter-fold origin-bottom">
-                    <div className="rounded-sm border-2 border-[#c8a96e] overflow-hidden shadow-lg"
-                      style={{ background: 'linear-gradient(160deg, #f5edd8 0%, #ecdfc4 50%, #dfd0ad 100%)' }}>
-                      <LetterSVG {...sentData} />
-                    </div>
-                  </div>
-                  <p className="mt-4 font-schematic text-xs text-brass-light animate-pulse tracking-widest uppercase">
-                    ⚙ Dobrando a carta...
-                  </p>
-                </div>
-              )}
-
-              {/* FASE STAMPING: Carimbo de cera descendo sobre o envelope */}
-              {phase === 'stamping' && (
-                <div className="flex flex-col items-center justify-center py-4 min-h-[340px] relative">
-                  {/* Envelope fechado */}
-                  <div className="animate-capsule-appear">
-                    <svg viewBox="0 0 280 180" className="w-72" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                        <linearGradient id="envGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                          <stop offset="0%" stopColor="#f0e5c8" />
-                          <stop offset="100%" stopColor="#d4c095" />
-                        </linearGradient>
-                      </defs>
-                      <rect x="10" y="10" width="260" height="160" rx="6" fill="url(#envGrad)" stroke="#c8a96e" strokeWidth="2" />
-                      {/* Dobra diagonal do envelope */}
-                      <polygon points="10,10 140,95 270,10" fill="#e8d4a0" stroke="#c8a96e" strokeWidth="1.5" />
-                      <polygon points="10,170 130,95 10,10" fill="#d4bc80" stroke="#c8a96e" strokeWidth="1" />
-                      <polygon points="270,170 150,95 270,10" fill="#d4bc80" stroke="#c8a96e" strokeWidth="1" />
-                      {/* Aba inferior fechada */}
-                      <polygon points="10,170 140,90 270,170" fill="#e0cc95" stroke="#c8a96e" strokeWidth="1.5" />
-                      {/* Texto no envelope */}
-                      <text x="140" y="145" textAnchor="middle" fontFamily="Courier Prime, monospace" fontSize="9" fill="#7a5a28" letterSpacing="1">Para: Gustavo Rodrigues</text>
-                    </svg>
-                  </div>
-
-                  {/* Carimbo de cera descendo */}
-                  <div className="absolute" style={{ top: '30%', left: '50%', transform: 'translateX(-50%)', width: '64px', height: '64px' }}>
-                    <div className="animate-wax-stamp">
-                      <div className="animate-wax-drip animate-wax-shine">
-                        <WaxSealSVG />
-                      </div>
-                    </div>
-                  </div>
-
-                  <p className="mt-6 font-schematic text-xs text-copper-light animate-pulse tracking-widest uppercase">
-                    🔥 Aplicando lacre de cera...
-                  </p>
-                </div>
-              )}
-
-              {/* FASE CAPSULE: Envelope dentro da cápsula pneumática */}
-              {phase === 'capsule' && (
-                <div className="flex flex-col items-center justify-center py-4 min-h-[340px]">
-                  <div className="animate-capsule-appear w-full max-w-xs">
-                    <CapsuleSVG />
-                  </div>
-                  <p className="mt-6 font-schematic text-xs text-brass-light animate-pulse tracking-widest uppercase">
-                    ⚙ Encapsulando a missiva...
-                  </p>
-                </div>
-              )}
-
-              {/* FASE TUBE: Cápsula viajando pelo tubo */}
-              {phase === 'tube' && (
-                <div className="flex flex-col items-center justify-center py-4 min-h-[340px] overflow-hidden">
-                  {/* Tubo */}
-                  <div className="w-full animate-tube-pressure">
-                    <TubeSVG active={true} />
-                  </div>
-
-                  {/* Cápsula viajando dentro do tubo */}
-                  <div className="relative w-full mt-2" style={{ height: '60px' }}>
-                    <div className="absolute animate-capsule-tube" style={{ top: 0, left: '5%', width: '28%' }}>
-                      <CapsuleSVG />
-                    </div>
-                    {/* Vapor/fumaça saindo pela direita */}
-                    <div className="absolute" style={{ top: '15%', right: '6%' }}>
-                      <div className="animate-steam-puff w-8 h-8 rounded-full"
-                        style={{ background: 'radial-gradient(circle, rgba(255,200,100,0.6) 0%, rgba(200,150,50,0.1) 100%)' }}>
-                      </div>
-                    </div>
-                    <div className="absolute animate-steam-puff" style={{ top: '5%', right: '12%', animationDelay: '0.2s' }}>
-                      <div className="w-5 h-5 rounded-full"
-                        style={{ background: 'radial-gradient(circle, rgba(255,220,150,0.5) 0%, transparent 100%)' }}>
-                      </div>
-                    </div>
-                    <Wind className="absolute top-3 right-2 w-5 h-5 text-brass animate-pulse" />
-                  </div>
-
-                  <p className="mt-4 font-schematic text-xs text-steamAmber-bright animate-pulse tracking-widest uppercase">
-                    💨 Despachando pelo tubo pneumático!
-                  </p>
-                </div>
-              )}
-
-              {/* FASE DONE: Mensagem de sucesso */}
-              {isDone && (
-                <div className="flex flex-col items-center justify-center py-8 min-h-[340px] gap-6">
-                  {/* Lacre de cera grande como confirmação */}
-                  <div className="w-24 h-24 animate-wax-shine">
-                    <WaxSealSVG className="drop-shadow-[0_0_16px_rgba(200,30,30,0.7)]" />
-                  </div>
-
-                  <div className="text-center steampunk-panel p-6 rounded-lg border border-brass/60 max-w-sm">
-                    <CheckCircle2 className="w-8 h-8 text-steamAmber-bright mx-auto mb-3" />
-                    <h3 className="font-cinzel text-base font-bold text-brass-gradient uppercase tracking-wide mb-2">
-                      Missiva Despachada!
+                  <div>
+                    <h3 className="font-cinzel text-xs sm:text-sm font-bold text-brass-light leading-tight">
+                      LinkedIn
                     </h3>
-                    <p className="font-schematic text-xs text-[#cbba9d] leading-relaxed">
-                      Sua carta foi lacrada, encapsulada e enviada pelo tubo pneumático.
-                      Gustavo Rodrigues a receberá em breve e retornará o contato.
+                    <p className="text-[10px] text-[#9f8f7b] font-schematic truncate max-w-[200px] sm:max-w-[260px]">
+                      {profileData.social.linkedin.label}
                     </p>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={() => { setPhase('idle'); setSentData(null); }}
-                    className="btn-steampunk px-5 py-2 rounded text-xs font-schematic font-bold text-brass-light hover:text-white uppercase tracking-wider"
-                  >
-                    ✉ Redigir Nova Carta
-                  </button>
                 </div>
-              )}
+                <a
+                  href={profileData.social.linkedin.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-steampunk px-2.5 py-1 rounded text-[11px] font-schematic font-bold text-brass-light hover:text-white uppercase flex items-center gap-1"
+                >
+                  <span>Abrir</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
+              {/* Caixa Compacta GitHub */}
+              <div className="steampunk-panel p-3 rounded-md border border-brass-dark/60 hover:border-brass transition-all flex items-center justify-between group">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded bg-[#1e1711] border border-brass-dark flex items-center justify-center text-brass-light group-hover:scale-105 transition-transform shadow-inner">
+                    <GithubIcon className="w-4 h-4 text-steamAmber-bright" />
+                  </div>
+                  <div>
+                    <h3 className="font-cinzel text-xs sm:text-sm font-bold text-brass-light leading-tight">
+                      GitHub
+                    </h3>
+                    <p className="text-[10px] text-[#9f8f7b] font-schematic truncate max-w-[200px] sm:max-w-[260px]">
+                      {profileData.social.github.label}
+                    </p>
+                  </div>
+                </div>
+                <a
+                  href={profileData.social.github.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-steampunk px-2.5 py-1 rounded text-[11px] font-schematic font-bold text-brass-light hover:text-white uppercase flex items-center gap-1"
+                >
+                  <span>Abrir</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </div>
+
+              {/* Caixa Compacta Localização */}
+              <div className="steampunk-panel p-3 rounded-md border border-brass-dark/50 flex items-center gap-3">
+                <div className="w-8 h-8 rounded bg-[#1e1711] border border-brass-dark flex items-center justify-center text-brass-light shadow-inner">
+                  <MapPin className="w-4 h-4 text-copper-light" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-schematic text-copper-light block uppercase leading-tight">
+                    Base Operacional
+                  </span>
+                  <span className="text-xs font-schematic text-[#cfbfab] font-medium">
+                    {profileData.personal.location}
+                  </span>
+                </div>
+              </div>
 
             </div>
-            {/* fim da área de animação */}
 
           </div>
-          {/* fim coluna direita */}
+
+          {/* ════════════ COLUNA DIREITA: CARTA COM ADESIVO DE CERA FLUTUANDO ════════════ */}
+          <div className="lg:col-span-5 flex items-center justify-center relative py-8">
+
+            {/* Halo / Iluminação Âmbar de Fundo */}
+            <div className="absolute w-72 h-96 rounded-full bg-steamAmber-glow/15 blur-3xl pointer-events-none" />
+
+            {/* Container da Carta com Animação de Flutuação Contínua */}
+            <div className="relative animate-float-letter group select-none">
+
+              {/* Balão de Mensagem Vitoriano Flutuando sobre a Carta */}
+              <div className="absolute -top-7 -right-4 z-30 bg-[#1e1710] border-2 border-brass-light px-3.5 py-1.5 rounded-full shadow-[0_4px_16px_rgba(0,0,0,0.8)] flex items-center gap-2 transform rotate-6 group-hover:rotate-0 transition-transform duration-300">
+                <MessageSquare className="w-3.5 h-3.5 text-steamAmber-bright animate-pulse" />
+                <span className="font-schematic text-[11px] font-bold tracking-wider text-brass-light whitespace-nowrap">
+                  Pronto para conectar!
+                </span>
+                {/* Rabicho do balão */}
+                <div className="absolute -bottom-1.5 left-6 w-3 h-3 bg-[#1e1710] border-r-2 border-b-2 border-brass-light transform rotate-45" />
+              </div>
+
+              {/* A CARTA VITORIANA EM PERGAMINHO */}
+              <div
+                className="w-72 sm:w-80 h-[380px] sm:h-[420px] rounded-sm p-6 relative border-2 border-[#b8993f] shadow-[0_20px_45px_rgba(0,0,0,0.9),inset_0_1px_2px_rgba(255,255,255,0.4)] flex flex-col justify-between"
+                style={{
+                  background: 'linear-gradient(155deg, #f7eed8 0%, #ecd9b5 45%, #dfc79e 100%)',
+                }}
+              >
+                {/* Dobra de canto superior esquerdo decorada */}
+                <div
+                  className="absolute top-0 left-0 w-0 h-0 pointer-events-none"
+                  style={{
+                    borderLeft: '28px solid #a38234',
+                    borderBottom: '28px solid transparent',
+                  }}
+                />
+                <div
+                  className="absolute top-0 left-0 w-0 h-0 pointer-events-none"
+                  style={{
+                    borderLeft: '26px solid #e8d7b3',
+                    borderBottom: '26px solid transparent',
+                  }}
+                />
+
+                {/* Textura de linhas sutis pautadas na carta */}
+                <div className="absolute inset-0 pointer-events-none opacity-25 overflow-hidden rounded-sm">
+                  {[60, 95, 130, 165, 200, 235, 270, 305, 340].map((y, idx) => (
+                    <div key={idx} className="absolute w-full h-px bg-[#7c5d26]" style={{ top: y }} />
+                  ))}
+                </div>
+
+                {/* 4 Cantoneiras Rebitadas em Latão */}
+                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-brass-light border border-black shadow" />
+                <span className="absolute bottom-2 left-2 w-2 h-2 rounded-full bg-brass-light border border-black shadow" />
+                <span className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-brass-light border border-black shadow" />
+
+                {/* Cabeçalho da Carta */}
+                <div className="relative z-10 border-b border-[#a07b36]/60 pb-3">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-schematic text-[8px] uppercase tracking-widest text-[#72531e] font-bold">
+                      Despacho Telegráfico
+                    </span>
+                    <span className="font-schematic text-[8px] text-[#8e6c31]">
+                      Est. 2026
+                    </span>
+                  </div>
+                  <h4 className="font-cinzel text-base font-bold text-[#442c0c] tracking-wide">
+                    Gustavo Rodrigues
+                  </h4>
+                  <p className="font-schematic text-[9px] text-[#785922]">
+                    Engenharia de Software & Suporte de TI
+                  </p>
+                </div>
+
+                {/* Conteúdo Simulado da Carta */}
+                <div className="relative z-10 space-y-2 py-3 font-schematic text-[10px] text-[#4d320d] leading-relaxed">
+                  <p className="italic">
+                    "Prezado visitante, portas e canais abertos para novas colaborações, soluções de sistemas e projetos tecnológicos."
+                  </p>
+                  <p className="text-[9px] text-[#73531f]">
+                    Destinatário direto: Aracaju / Sergipe
+                  </p>
+                </div>
+
+                {/* Rodapé da Carta com Assinatura */}
+                <div className="relative z-10 pt-3 border-t border-[#a07b36]/50 flex items-center justify-between text-[9px] font-schematic text-[#6b4c19]">
+                  <span>Correspondência Validada</span>
+                  <span className="font-cinzel font-bold text-[#442c0c]">G. Rodrigues</span>
+                </div>
+
+                {/* ── ADESIVO DE CERA FLUTUANTE EM RELEVO ── */}
+                <div className="absolute -bottom-6 -right-6 z-20 hover:scale-110 transition-transform duration-300 cursor-pointer">
+                  <WaxSeal className="w-24 h-24 sm:w-28 sm:h-28" />
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
 
         </div>
       </div>
