@@ -73,7 +73,15 @@ export default {
         'amber-pulse': {
           '0%, 100%': { opacity: '0.7', filter: 'drop-shadow(0 0 8px rgba(255,157,46,0.6))' },
           '50%': { opacity: '1', filter: 'drop-shadow(0 0 20px rgba(255,157,46,0.95))' },
-        }
+        },
+        'card-swing': {
+          '0%': { transform: 'rotate(0deg)' },
+          '20%': { transform: 'rotate(3.5deg)' },
+          '45%': { transform: 'rotate(-2.2deg)' },
+          '70%': { transform: 'rotate(1.2deg)' },
+          '88%': { transform: 'rotate(-0.4deg)' },
+          '100%': { transform: 'rotate(0deg)' },
+        },
       },
       animation: {
         'spin-slow': 'spin 35s linear infinite',
@@ -82,6 +90,7 @@ export default {
         'gauge-flutter': 'gauge-flutter 3.5s ease-in-out infinite',
         'steam-vent': 'steam-vent 2.8s ease-out infinite',
         'amber-pulse': 'amber-pulse 2.5s ease-in-out infinite',
+        'card-swing': 'card-swing 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards',
       }
     },
   },
