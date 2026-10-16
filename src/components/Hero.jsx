@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { SteampunkGear } from './SteampunkGear';
-import { SteamGauge } from './SteamGauge';
+import { SteampunkComputer } from './SteampunkComputer';
 import { profileData } from '../data/profile';
-import { Flame, ArrowDown, ExternalLink, Compass, Camera } from 'lucide-react';
+import { ArrowDown, ExternalLink, Compass, Camera } from 'lucide-react';
 
 export const Hero = () => {
   const [steamPressure, setSteamPressure] = useState(78);
@@ -187,82 +187,9 @@ export const Hero = () => {
 
           </div>
 
-          {/* Coluna Direita: O Mecanismo Central (Caldeira & Manômetro Interativo) */}
-          <div className="lg:col-span-5 flex flex-col items-center justify-center">
-            <div className="steampunk-panel p-6 sm:p-8 rounded-lg w-full max-w-md relative group">
-              
-              {/* Rebites nos 4 cantos da placa */}
-              <div className="absolute top-2 left-2 w-2 h-2 rounded-full bg-brass-light border border-black shadow"></div>
-              <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-brass-light border border-black shadow"></div>
-              <div className="absolute bottom-2 left-2 w-2 h-2 rounded-full bg-brass-light border border-black shadow"></div>
-              <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-brass-light border border-black shadow"></div>
-
-              {/* Placa com Título da Caldeira */}
-              <div className="brass-plate py-1.5 px-4 rounded text-center mb-6">
-                <span className="font-cinzel text-xs font-bold tracking-widest text-brass-light uppercase">
-                  Caldeira de Engenharia de Software
-                </span>
-                <p className="text-[10px] font-schematic text-copper-light">
-                  Módulo Propulsor • Soluções Web & TI
-                </p>
-              </div>
-
-              {/* Manômetro Central com Interatividade */}
-              <div className="flex flex-col items-center justify-center my-2 relative">
-                <SteamGauge
-                  value={steamPressure}
-                  label="Pressão Operacional"
-                  unit="PSI"
-                  size={190}
-                  sublabel={steamPressure >= 90 ? "SOBRECARGA NOMINAL" : "STATUS IDEAL"}
-                  interactive={true}
-                  onBoost={handleBoostPressure}
-                />
-
-                {/* Efeito de Vapor em Nuvem */}
-                {steamPuffing && (
-                  <div className="absolute -top-6 text-xs font-schematic text-steamAmber-bright animate-bounce flex items-center gap-1">
-                    <Flame className="w-3.5 h-3.5" />
-                    <span>VAPOR EXPELIDO! +12 PSI</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Controles Mecânicos Interativos */}
-              <div className="mt-6 pt-5 border-t border-brass-dark/40 flex flex-col items-center gap-3">
-                <button
-                  type="button"
-                  onClick={handleBoostPressure}
-                  className="btn-steampunk w-full py-2.5 px-4 rounded text-xs font-schematic font-bold text-brass-light hover:text-white uppercase tracking-wider flex items-center justify-center gap-2 group"
-                >
-                  <Flame className="w-4 h-4 text-steamAmber-glow group-hover:scale-110 transition-transform" />
-                  <span>Alavanca de Pressurização</span>
-                </button>
-
-                <div className="flex items-center justify-between w-full text-[11px] font-schematic text-[#a89680]">
-                  <span>{profileData.personal.location}</span>
-                  <span className="text-brass">TI & Desenvolvimento Web</span>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Pequenos Manômetros / Indicadores de Estatísticas */}
-            <div className="grid grid-cols-3 gap-3 w-full max-w-md mt-4">
-              <div className="steampunk-panel p-2.5 rounded text-center border border-brass-dark/40">
-                <span className="font-cinzel text-base font-bold text-brass-light">Web</span>
-                <p className="text-[9px] font-schematic text-[#ab9a83] uppercase mt-0.5">Sistemas</p>
-              </div>
-              <div className="steampunk-panel p-2.5 rounded text-center border border-brass-dark/40">
-                <span className="font-cinzel text-base font-bold text-copper-light">Dev</span>
-                <p className="text-[9px] font-schematic text-[#ab9a83] uppercase mt-0.5">Python & React</p>
-              </div>
-              <div className="steampunk-panel p-2.5 rounded text-center border border-brass-dark/40">
-                <span className="font-cinzel text-base font-bold text-steamAmber-bright">SECOM</span>
-                <p className="text-[9px] font-schematic text-[#ab9a83] uppercase mt-0.5">Estágio TI</p>
-              </div>
-            </div>
-
+          {/* Coluna Direita: O Computador Steampunk Vitoriano (Gabinete de Mogno & Máquina de Escrever) */}
+          <div className="lg:col-span-5 flex flex-col items-center justify-center w-full">
+            <SteampunkComputer />
           </div>
 
         </div>
