@@ -1,6 +1,110 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { SteampunkGear } from './SteampunkGear';
-import { ChevronUp, Compass } from 'lucide-react';
+import { ChevronUp, Compass, Home, User, Wrench, FolderGit2, Mail } from 'lucide-react';
+
+/**
+ * Lâmpada indicadora Steampunk horizontal (lado esquerdo da barra lateral)
+ * O bulbo aponta para a esquerda e o soquete encaixa atrás da lateral da barra à direita.
+ */
+const SteampunkNavBulb = ({ isActive, icon: Icon, id }) => {
+  return (
+    <div
+      className={`relative w-[44px] sm:w-[48px] h-[28px] sm:h-[30px] flex items-center transition-all duration-300 ${isActive
+        ? 'scale-110 drop-shadow-[0_0_14px_rgba(255,157,46,0.95)]'
+        : 'hover:scale-105 hover:drop-shadow-[0_0_8px_rgba(255,157,46,0.5)] opacity-85 hover:opacity-100'
+        }`}
+    >
+      <svg
+        viewBox="0 0 46 28"
+        className="absolute inset-0 w-full h-full overflow-visible pointer-events-none"
+      >
+        <defs>
+          {/* Gradiente do bulbo de vidro aceso - foco no bojo à esquerda */}
+          <radialGradient id={`nav-lamp-lit-${id}`} cx="38%" cy="50%" r="55%">
+            <stop offset="0%" stopColor="#fffcee" stopOpacity="0.95" />
+            <stop offset="25%" stopColor="#ffbe54" stopOpacity="0.9" />
+            <stop offset="60%" stopColor="#e57207" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#5c2000" stopOpacity="0.95" />
+          </radialGradient>
+
+          {/* Gradiente do bulbo de vidro apagado */}
+          <radialGradient id={`nav-lamp-off-${id}`} cx="42%" cy="48%" r="55%">
+            <stop offset="0%" stopColor="#2c2219" stopOpacity="0.9" />
+            <stop offset="60%" stopColor="#1a130e" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#0c0906" stopOpacity="0.98" />
+          </radialGradient>
+        </defs>
+
+        {/* Soquete de latão (à direita, encaixando por trás da barra lateral) */}
+        <g>
+          {/* Base embutida que fica escondida atrás da lateral da barra */}
+          <rect
+            x="40"
+            y="7.5"
+            width="6"
+            height="13"
+            rx="0.8"
+            fill="#22180e"
+            stroke="#4a3622"
+            strokeWidth="0.8"
+          />
+          {/* Anéis da rosca mecânica - pequena parte visível saindo da lateral */}
+          <rect
+            x="38"
+            y="8"
+            width="2.5"
+            height="12"
+            rx="0.4"
+            fill="#453118"
+            stroke="#755624"
+            strokeWidth="0.6"
+          />
+          <rect
+            x="35.5"
+            y="7.5"
+            width="2.5"
+            height="13"
+            rx="0.4"
+            fill="#5a3f1d"
+            stroke="#916a2d"
+            strokeWidth="0.6"
+          />
+          {/* Colar / Anel de latão de transição para o vidro */}
+          <rect
+            x="32"
+            y="6.5"
+            width="3.5"
+            height="15"
+            rx="0.8"
+            fill="#755624"
+            stroke="#c69c4d"
+            strokeWidth="0.8"
+          />
+        </g>
+
+        {/* Bulbo de vidro horizontal (apontando para a esquerda, esférico na ponta esquerda) */}
+        <path
+          d="M 33 8.5 C 29 8.5, 25 2, 18 2 C 10.3 2, 4 7.4, 4 14 C 4 20.6, 10.3 26, 18 26 C 25 26, 29 19.5, 33 19.5 Z"
+          fill={isActive ? `url(#nav-lamp-lit-${id})` : `url(#nav-lamp-off-${id})`}
+          stroke={isActive ? '#ffe494' : '#684e26'}
+          strokeWidth={isActive ? '1.3' : '0.8'}
+          className="transition-colors duration-300"
+        />
+      </svg>
+
+      {/* Ícone na parte interna do bulbo de vidro (centralizado na esfera esquerda, mantendo orientação em pé) */}
+      <div className="absolute left-[39%] top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex items-center justify-center pointer-events-none">
+        <Icon
+          className={`w-3 h-3 sm:w-3.5 sm:h-3.5 transition-all duration-300 ${isActive
+            ? 'text-[#150d04] drop-shadow-[0_0_2px_rgba(255,255,255,0.7)]'
+            : 'text-brass-light/85 group-hover/item:text-brass-light'
+            }`}
+          strokeWidth={isActive ? 2.6 : 2.2}
+        />
+      </div>
+    </div>
+  );
+};
 
 /**
  * Barra lateral Steampunk com trilho de cremalheira vertical
@@ -18,11 +122,11 @@ export const SteampunkSidebar = () => {
   const trackRef = useRef(null);
 
   const sections = [
-    { id: 'hero', label: 'Início', roman: 'I', desc: 'Convés Principal' },
-    { id: 'experiencia', label: 'Experiência', roman: 'II', desc: 'Atuação Profissional' },
-    { id: 'habilidades', label: 'Habilidades', roman: 'III', desc: 'Insígnias Técnicas' },
-    { id: 'projetos', label: 'Projetos', roman: 'IV', desc: 'Arquivo de Patentes' },
-    { id: 'contato', label: 'Contato', roman: 'V', desc: 'Central Telegráfica' },
+    { id: 'hero', label: 'Início', icon: Home, desc: 'Convés Principal' },
+    { id: 'experiencia', label: 'Experiência', icon: User, desc: 'Atuação Profissional' },
+    { id: 'habilidades', label: 'Habilidades', icon: Wrench, desc: 'Insígnias Técnicas' },
+    { id: 'projetos', label: 'Projetos', icon: FolderGit2, desc: 'Arquivo de Patentes' },
+    { id: 'contato', label: 'Contato', icon: Mail, desc: 'Central Telegráfica' },
   ];
 
   useEffect(() => {
@@ -143,13 +247,64 @@ export const SteampunkSidebar = () => {
   return (
     <aside
       aria-label="Barra lateral mecânica de navegação"
-      className="fixed right-2 sm:right-3 md:right-5 top-1/2 -translate-y-1/2 z-40 select-none flex items-center"
+      className="fixed right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-40 select-none flex items-center"
     >
-      {/* Console Vitoriano Industrial */}
-      <div className={`relative flex flex-col items-center bg-[#130f0c]/95 backdrop-blur-md border rounded-2xl p-2 sm:p-2.5 shadow-[0_12px_35px_rgba(0,0,0,0.85)] transition-all duration-300 ${
-        isDragging ? 'border-brass shadow-amber-glow' : 'border-brass-dark/80 hover:border-brass/70'
-      }`}>
-        
+      {/* Marcadores de Seções em Formato de Lâmpada (Encaixadas do Lado Esquerdo da Barra) */}
+      <div
+        className="absolute left-0 top-1/2 flex flex-col justify-between py-1 z-0 pointer-events-none"
+        style={{
+          height: `${trackHeight}px`,
+          transform: 'translate(-36px, -50%)',
+        }}
+      >
+        {sections.map((section) => {
+          const isActive = activeSection === section.id;
+          const Icon = section.icon;
+          return (
+            <div key={section.id} className="relative flex items-center group/item pointer-events-auto hover:z-30">
+
+              {/* Botão Lâmpada Steampunk Horizontal (apontando para a esquerda) */}
+              <button
+                type="button"
+                onClick={() => scrollToSection(section.id)}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                aria-label={`Ir para seção ${section.label}`}
+                className="relative focus:outline-none transition-transform active:scale-95"
+              >
+                <SteampunkNavBulb
+                  isActive={isActive}
+                  icon={Icon}
+                  id={section.id}
+                />
+              </button>
+
+              {/* Tooltip Vitoriano em Pergaminho/Bronze à esquerda da lâmpada ao passar o mouse */}
+              <div
+                className="absolute right-full mr-2.5 hidden group-hover/item:flex items-center gap-2 px-2.5 py-1 rounded bg-[#18130e]/95 border border-brass-dark text-nowrap shadow-2xl pointer-events-none transition-all duration-200 z-50"
+              >
+                <div className="flex flex-col text-right">
+                  <span className="font-cinzel text-xs font-bold text-brass-gradient uppercase">
+                    {section.label}
+                  </span>
+                  <span className="text-[9px] font-schematic text-[#ab9982]">
+                    {section.desc}
+                  </span>
+                </div>
+                <span className="text-copper-light text-[10px]">⚙</span>
+
+                {/* Seta do tooltip apontando para a direita (em direção à lâmpada) */}
+                <span className="absolute left-full top-1/2 -translate-y-1/2 border-4 border-transparent border-l-[#18130e]"></span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Console Vitoriano Industrial (em primeiro plano sobre as bases dos soquetes) */}
+      <div className={`relative z-10 flex flex-col items-center bg-[#130f0c]/95 backdrop-blur-md border rounded-2xl p-2 sm:p-2.5 shadow-[0_12px_35px_rgba(0,0,0,0.85)] transition-all duration-300 ${isDragging ? 'border-brass shadow-amber-glow' : 'border-brass-dark/80 hover:border-brass/70'
+        }`}>
+
         {/* Rebites nos cantos do painel */}
         <span className="absolute top-1.5 left-1.5 w-1.5 h-1.5 rounded-full bg-brass-light/80 shadow-[0_0_2px_#fff]"></span>
         <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-brass-light/80 shadow-[0_0_2px_#fff]"></span>
@@ -188,11 +343,10 @@ export const SteampunkSidebar = () => {
 
           {/* Carrinho Mecânico com Engrenagens que acompanham o scroll ou são arrastadas */}
           <div
-            className={`absolute left-1/2 flex items-center justify-center transition-transform ${
-              isDragging
-                ? 'scale-110 cursor-grabbing'
-                : 'cursor-grab hover:scale-105 duration-75'
-            }`}
+            className={`absolute left-1/2 flex items-center justify-center transition-transform ${isDragging
+              ? 'scale-110 cursor-grabbing'
+              : 'cursor-grab hover:scale-105 duration-75'
+              }`}
             style={{
               top: `${scrollProgress * 100}%`,
               transform: 'translate(-50%, -50%)',
@@ -220,68 +374,11 @@ export const SteampunkSidebar = () => {
               />
 
               {/* Indicador de Pressão / Centro iluminado com pulso suave */}
-              <div className={`absolute inset-0 m-auto w-2.5 h-2.5 rounded-full transition-all ${
-                isDragging
-                  ? 'bg-steamAmber-bright shadow-[0_0_12px_#ff9d2e] scale-125'
-                  : 'bg-steamAmber-glow/80 shadow-[0_0_8px_#ff9d2e]'
-              }`}></div>
+              <div className={`absolute inset-0 m-auto w-2.5 h-2.5 rounded-full transition-all ${isDragging
+                ? 'bg-steamAmber-bright shadow-[0_0_12px_#ff9d2e] scale-125'
+                : 'bg-steamAmber-glow/80 shadow-[0_0_8px_#ff9d2e]'
+                }`}></div>
             </div>
-          </div>
-
-          {/* Marcadores de Seções (Waypoints Alinhados ao Trilho) */}
-          <div className="absolute inset-y-0 right-[-14px] sm:right-[-18px] flex flex-col justify-between py-1 z-10 pointer-events-none">
-            {sections.map((section) => {
-              const isActive = activeSection === section.id;
-              return (
-                <div key={section.id} className="relative flex items-center group/item pointer-events-auto">
-                  
-                  {/* Botão Waypoint */}
-                  <button
-                    type="button"
-                    onClick={() => scrollToSection(section.id)}
-                    onMouseDown={(e) => e.stopPropagation()}
-                    onTouchStart={(e) => e.stopPropagation()}
-                    aria-label={`Ir para seção ${section.label}`}
-                    className={`relative w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center transition-all duration-300 ${
-                      isActive
-                        ? 'bg-brass border-2 border-brass-light shadow-[0_0_12px_#ff9d2e] scale-110'
-                        : 'bg-[#1e1712] border border-brass-dark/70 hover:border-brass-light hover:scale-105'
-                    }`}
-                  >
-                    <span
-                      className={`text-[8px] sm:text-[9px] font-cinzel font-bold leading-none ${
-                        isActive ? 'text-steampunk-darkest' : 'text-brass-light/90'
-                      }`}
-                    >
-                      {section.roman}
-                    </span>
-
-                    {/* Brilho quando ativo */}
-                    {isActive && (
-                      <span className="absolute -inset-1 rounded-full bg-steamAmber-glow/20 animate-pulse pointer-events-none"></span>
-                    )}
-                  </button>
-
-                  {/* Tooltip Vitoriano em Pergaminho/Bronze ao passar o mouse */}
-                  <div
-                    className="absolute right-full mr-3.5 hidden group-hover/item:flex items-center gap-2 px-2.5 py-1 rounded bg-[#18130e]/95 border border-brass-dark text-nowrap shadow-2xl pointer-events-none transition-all duration-200 z-50"
-                  >
-                    <div className="flex flex-col text-right">
-                      <span className="font-cinzel text-xs font-bold text-brass-gradient uppercase">
-                        {section.label}
-                      </span>
-                      <span className="text-[9px] font-schematic text-[#ab9982]">
-                        {section.desc}
-                      </span>
-                    </div>
-                    <span className="text-copper-light text-[10px]">⚙</span>
-
-                    {/* Seta do tooltip apontando para a direita */}
-                    <span className="absolute left-full top-1/2 -translate-y-1/2 border-4 border-transparent border-l-[#18130e]"></span>
-                  </div>
-                </div>
-              );
-            })}
           </div>
         </div>
 
