@@ -123,7 +123,7 @@ export const SteampunkSidebar = () => {
 
   const sections = [
     { id: 'hero', label: 'Início', icon: Home, desc: 'Convés Principal' },
-    { id: 'experiencia', label: 'Experiência', icon: User, desc: 'Atuação Profissional' },
+    { id: 'experiencia', label: 'Sobre Mim', icon: User, desc: 'Trajetória & Interesses' },
     { id: 'habilidades', label: 'Habilidades', icon: Wrench, desc: 'Insígnias Técnicas' },
     { id: 'projetos', label: 'Projetos', icon: FolderGit2, desc: 'Arquivo de Patentes' },
     { id: 'contato', label: 'Contato', icon: Mail, desc: 'Central Telegráfica' },

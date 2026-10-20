@@ -1,123 +1,327 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { profileData } from '../data/profile';
 import { SteampunkGear } from './SteampunkGear';
 import { 
-  Award,
-  Briefcase,
-  Building2,
-  Calendar,
-  MapPin,
-  Sparkles
+  User, 
+  GraduationCap, 
+  Briefcase, 
+  Building2, 
+  Calendar, 
+  MapPin, 
+  Award, 
+  Code2, 
+  Database, 
+  ShieldCheck, 
+  Workflow, 
+  Sparkles,
+  Camera,
+  Compass,
+  ArrowRight
 } from 'lucide-react';
 
 export const AboutUFS = () => {
+  const [photo, setPhoto] = useState(null);
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPhoto(url);
+    }
+  };
+
+  const interestPillars = [
+    {
+      title: "Engenharia de Software & Web",
+      desc: "Construção de aplicações completas, responsivas e performáticas com React, Tailwind CSS, JavaScript e TypeScript.",
+      icon: Code2,
+      color: "text-brass-light"
+    },
+    {
+      title: "Backend, Python & Dados",
+      desc: "Automação de rotinas, desenvolvimento de servidores com Django e manipulação analítica com SQL e PostgreSQL.",
+      icon: Database,
+      color: "text-copper-light"
+    },
+    {
+      title: "Suporte & Infraestrutura de TI",
+      desc: "Diagnóstico e manutenção de hardware e software, redes locais e garantia de continuidade operacional na SECOM.",
+      icon: ShieldCheck,
+      color: "text-steamAmber-bright"
+    },
+    {
+      title: "DevOps & Ferramental Moderno",
+      desc: "Controle rigoroso de versões com Git e GitHub, conteinerização ágil com Docker e prototipagem no Figma.",
+      icon: Workflow,
+      color: "text-brass"
+    }
+  ];
+
   return (
     <section
       id="experiencia"
-      className="relative py-24 bg-[#0e0c0a] border-b-2 border-brass-dark/60 overflow-hidden"
+      className="relative py-28 bg-[#0e0c0a] border-b-2 border-brass-dark/60 overflow-hidden"
     >
-      {/* Detalhes de Fundo com Engrenagem Steampunk */}
+      {/* Detalhes de Fundo com Engrenagens Steampunk */}
       <div className="absolute -top-16 right-0 opacity-10 pointer-events-none">
         <SteampunkGear size={260} teeth={14} color="brass" speed="spin-reverse-slow" />
+      </div>
+      <div className="absolute -bottom-20 -left-12 opacity-10 pointer-events-none">
+        <SteampunkGear size={240} teeth={12} color="copper" speed="spin-slow" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Cabeçalho da Seção */}
+        {/* ============================================================ */}
+        {/* CABEÇALHO DA SEÇÃO: SOBRE MIM                                */}
+        {/* ============================================================ */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded bg-[#1e1711] border border-brass-dark/70 text-xs font-schematic text-brass-light mb-3">
-            <Briefcase className="w-4 h-4 text-copper-light" />
-            <span>REGISTRO DE OFÍCIO & ATUAÇÃO TÉCNICA</span>
+            <User className="w-4 h-4 text-copper-light" />
+            <span>SOBRE MIM • PERFIL & TRAJETÓRIA</span>
           </div>
 
           <h2 className="font-cinzel text-3xl sm:text-4xl lg:text-5xl font-bold text-brass-gradient tracking-wide mb-4">
-            Atuação Profissional
+            Sobre Mim
           </h2>
 
           <div className="flex items-center justify-center gap-3 mb-6">
             <span className="h-px w-12 bg-brass/60"></span>
             <span className="text-copper-light text-xs font-schematic uppercase tracking-widest">
-              Experiência Prática & Certificações
+              Trajetória, Habilidades & Interesses
             </span>
             <span className="h-px w-12 bg-brass/60"></span>
           </div>
 
           <p className="text-[#c5b59e] text-sm sm:text-base leading-relaxed">
-            Trajetória profissional orientada à resolução de problemas complexos de TI,
-            manutenção preventiva e corretiva de infraestruturas, automação de dados e desenvolvimento de aplicações.
+            Conheça minha jornada acadêmica na Universidade Federal de Sergipe, minha atuação prática 
+            no setor público e os interesses que impulsionam minha paixão por tecnologia.
           </p>
         </div>
 
-        {/* Grade de Experiências Profissionais */}
-        {profileData.experiences && profileData.experiences.length > 0 && (
-          <div className="mb-14">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {profileData.experiences.map((exp, idx) => (
-                <div
-                  key={idx}
-                  className="steampunk-panel p-6 sm:p-7 rounded-lg border border-brass-dark/70 hover:border-brass/80 transition-all relative group flex flex-col justify-between"
+        {/* ============================================================ */}
+        {/* BLOCO PRINCIPAL: FOTO À ESQUERDA & TEXTO À DIREITA           */}
+        {/* ============================================================ */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-start mb-20">
+          
+          {/* ---------------------------------------------------------- */}
+          {/* LADO ESQUERDO: Apenas a Foto Redonda e Limpa               */}
+          {/* ---------------------------------------------------------- */}
+          <div className="lg:col-span-5 flex flex-col items-center justify-center sticky top-28 py-4">
+            <div className="relative w-64 h-64 sm:w-76 sm:h-76 md:w-80 md:h-80 flex items-center justify-center">
+              
+              {/* Brilho Suave Âmbar de Fundo */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-steamAmber-dim/20 via-brass/10 to-copper/20 blur-3xl pointer-events-none" />
+
+              {/* Engrenagens Sutis em Volta para Manter a Estética Steampunk */}
+              <div className="absolute -top-5 -left-5 pointer-events-none drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] z-0 opacity-80">
+                <SteampunkGear size={80} teeth={10} color="copper" speed="spin-slow" />
+              </div>
+              <div className="absolute -bottom-6 -right-6 pointer-events-none drop-shadow-[0_4px_14px_rgba(0,0,0,0.85)] z-0 opacity-85">
+                <SteampunkGear size={92} teeth={12} color="brass" speed="spin-reverse-slow" />
+              </div>
+
+              {/* Anel Sutil Decorativo */}
+              <div className="absolute inset-[-10px] rounded-full border border-dashed border-brass-dark/40 pointer-events-none opacity-50" />
+
+              {/* Foto 100% Redonda */}
+              <div className="relative w-full h-full rounded-full overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.95)] group/photo cursor-pointer z-10">
+                <img
+                  src={photo || profileData.personal.avatar}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = profileData.personal.avatarFallback;
+                  }}
+                  alt={`Retrato de ${profileData.personal.name}`}
+                  className="w-full h-full object-cover rounded-full group-hover/photo:scale-105 transition-transform duration-500"
+                />
+
+                {/* Overlay Interativo para Trocar Foto */}
+                <label
+                  htmlFor="about-photo-input"
+                  title="Clique para testar uma foto sua agora ou salve em public/foto-perfil.jpg"
+                  className="absolute inset-0 rounded-full bg-black/65 opacity-0 group-hover/photo:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center cursor-pointer text-center p-4 z-20"
                 >
-                  {/* Rebites nos 4 cantos */}
-                  <div className="absolute top-2 left-2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></div>
-                  <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></div>
-                  <div className="absolute bottom-2 left-2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></div>
-                  <div className="absolute bottom-2 right-2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></div>
+                  <Camera className="w-8 h-8 text-brass-light mb-1.5 animate-bounce" />
+                  <span className="text-xs font-schematic font-bold text-brass-light">
+                    Alterar Imagem
+                  </span>
+                  <span className="text-[10px] font-schematic text-[#cbba9d] mt-0.5">
+                    foto-perfil.jpg
+                  </span>
+                </label>
 
-                  <div>
-                    <div className="flex items-start justify-between gap-4 mb-4">
-                      <div>
-                        <div className="flex items-center gap-2 text-[10px] font-schematic uppercase tracking-widest text-copper-light mb-1">
-                          <Calendar className="w-3 h-3 text-brass" />
-                          <span>{exp.period}</span>
-                          <span>•</span>
-                          <MapPin className="w-3 h-3 text-brass" />
-                          <span>{exp.location}</span>
+                <input
+                  id="about-photo-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  className="hidden"
+                />
+              </div>
+
+            </div>
+          </div>
+
+          {/* ---------------------------------------------------------- */}
+          {/* LADO DIREITO: Texto Resumindo Trajetória e Interesses      */}
+          {/* ---------------------------------------------------------- */}
+          <div className="lg:col-span-7 flex flex-col">
+            
+            {/* Bloco 1: A Minha Trajetória */}
+            <div className="mb-8">
+              <div className="inline-flex items-center gap-2 text-xs font-schematic uppercase tracking-wider text-copper-light font-bold mb-2.5">
+                <Sparkles className="w-4 h-4 text-steamAmber-glow" />
+                <span>Minha Trajetória</span>
+              </div>
+
+              <h3 className="font-cinzel text-2xl sm:text-3xl font-bold text-brass-light mb-4">
+                Construindo Soluções através da Computação
+              </h3>
+
+              <div className="space-y-4 text-sm sm:text-base text-[#d8c8b4] font-light leading-relaxed">
+                <p>
+                  Minha jornada na tecnologia iniciou-se com uma curiosidade incessante por entender o funcionamento interno de sistemas, softwares e redes. 
+                  Atualmente, curso o <strong className="text-brass-light font-medium">Bacharelado em Sistemas de Informação na Universidade Federal de Sergipe (UFS)</strong>, 
+                  onde desenvolvo uma formação sólida que integra a lógica pura da Ciência da Computação às práticas de Engenharia de Software e governança tecnológica.
+                </p>
+
+                <p>
+                  No campo profissional, atuo como <strong className="text-brass-light font-medium">Estagiário de TI na Secretaria de Estado da Comunicação Social (SECOM - Governo de Sergipe)</strong>, 
+                  sendo responsável pelo suporte técnico de primeiro e segundo nível aos colaboradores, manutenção e montagem de computadores, 
+                  configuração de redes locais, diagnóstico ágil de hardware e software, além de apoiar a sustentação da infraestrutura tecnológica da organização.
+                </p>
+
+                <p>
+                  Anteriormente, exerci atividades na <strong className="text-brass-light font-medium">Moura Dubeux</strong>, 
+                  onde aperfeiçoei minhas competências analíticas utilizando Excel avançado e Sistemas de Apoio à Decisão (SAD) para manipulação, 
+                  conferência e estruturação de dados corporativos e controle de fluxos operacionais.
+                </p>
+              </div>
+            </div>
+
+            {/* Bloco 2: Meus Interesses & Foco Técnico */}
+            <div className="pt-6 border-t border-brass-dark/40">
+              <div className="inline-flex items-center gap-2 text-xs font-schematic uppercase tracking-wider text-steamAmber-bright font-bold mb-3">
+                <Code2 className="w-4 h-4 text-brass" />
+                <span>Interesses & Foco de Carreira</span>
+              </div>
+
+              <p className="text-sm text-[#cbbba6] leading-relaxed mb-6 font-light">
+                Busco constantemente aprimorar minhas habilidades com projetos práticos, focando em arquiteturas limpas, 
+                código legível e soluções eficientes. Meus principais eixos de interesse incluem:
+              </p>
+
+              {/* Grade de Pilares de Interesse */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {interestPillars.map((pillar, idx) => {
+                  const Icon = pillar.icon;
+                  return (
+                    <div
+                      key={idx}
+                      className="p-4 rounded-lg bg-[#15100b] border border-brass-dark/60 hover:border-brass/80 transition-all group"
+                    >
+                      <div className="flex items-center gap-2.5 mb-2">
+                        <div className="w-7 h-7 rounded bg-[#20170f] border border-brass-dark/70 flex items-center justify-center">
+                          <Icon className={`w-4 h-4 ${pillar.color}`} />
                         </div>
+                        <h4 className="font-cinzel text-xs font-bold text-brass-light group-hover:text-brass-gradient transition-colors">
+                          {pillar.title}
+                        </h4>
+                      </div>
+                      <p className="text-xs text-[#a99882] font-light leading-relaxed">
+                        {pillar.desc}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
 
-                        <h3 className="font-cinzel text-lg sm:text-xl font-bold text-brass-light group-hover:text-brass-gradient transition-colors">
-                          {exp.role}
-                        </h3>
+          </div>
 
-                        <span className="text-xs font-schematic text-[#cbba9d] flex items-center gap-1.5 mt-1 font-medium">
-                          <Building2 className="w-3.5 h-3.5 text-steamAmber-glow" />
-                          {exp.company}
-                        </span>
+        </div>
+
+        {/* ============================================================ */}
+        {/* COMPLEMENTO: LINHA DO TEMPO DAS EXPERIÊNCIAS PROFISSIONAIS   */}
+        {/* ============================================================ */}
+        <div className="pt-12 border-t border-brass-dark/50">
+          
+          <div className="flex items-center gap-2 mb-8">
+            <Briefcase className="w-5 h-5 text-copper-light" />
+            <h3 className="font-cinzel text-xl sm:text-2xl font-bold text-brass-light">
+              Histórico Profissional Detalhado
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {profileData.experiences.map((exp, idx) => (
+              <div
+                key={idx}
+                className="steampunk-panel p-6 sm:p-7 rounded-lg border border-brass-dark/70 hover:border-brass/80 transition-all relative flex flex-col justify-between"
+              >
+                {/* Rebites nos 4 cantos */}
+                <div className="absolute top-2 left-2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></div>
+                <div className="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></div>
+                <div className="absolute bottom-2 left-2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></div>
+                <div className="absolute bottom-2 right-2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></div>
+
+                <div>
+                  <div className="flex items-start justify-between gap-4 mb-4">
+                    <div>
+                      <div className="flex items-center gap-2 text-[10px] font-schematic uppercase tracking-widest text-copper-light mb-1">
+                        <Calendar className="w-3 h-3 text-brass" />
+                        <span>{exp.period}</span>
+                        <span>•</span>
+                        <MapPin className="w-3 h-3 text-brass" />
+                        <span>{exp.location}</span>
                       </div>
 
-                      <span className={`px-2.5 py-1 rounded text-[10px] font-schematic uppercase tracking-wider font-bold whitespace-nowrap ${
-                        exp.current
-                          ? 'bg-[#291e12] border border-steamAmber-glow/80 text-steamAmber-bright shadow-sm'
-                          : 'bg-[#1a140f] border border-brass-dark/50 text-[#a89680]'
-                      }`}>
-                        {exp.current ? 'Em Atividade' : 'Concluído'}
+                      <h4 className="font-cinzel text-lg sm:text-xl font-bold text-brass-light">
+                        {exp.role}
+                      </h4>
+
+                      <span className="text-xs font-schematic text-[#cbba9d] flex items-center gap-1.5 mt-1 font-medium">
+                        <Building2 className="w-3.5 h-3.5 text-steamAmber-glow" />
+                        {exp.company}
                       </span>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-[#cfbfab] font-light leading-relaxed mt-4 pt-4 border-t border-brass-dark/40">
-                      {exp.description}
-                    </p>
-                  </div>
-
-                  <div className="mt-5 pt-3 border-t border-brass-dark/20 flex items-center justify-between text-[10px] font-schematic text-copper-light">
-                    <span className="flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 text-steamAmber-glow" />
-                      Modalidade: {exp.type}
+                    <span className={`px-2.5 py-1 rounded text-[10px] font-schematic uppercase tracking-wider font-bold whitespace-nowrap ${
+                      exp.current
+                        ? 'bg-[#291e12] border border-steamAmber-glow/80 text-steamAmber-bright shadow-sm'
+                        : 'bg-[#1a140f] border border-brass-dark/50 text-[#a89680]'
+                    }`}>
+                      {exp.current ? 'Em Atividade' : 'Concluído'}
                     </span>
-                    <span className="text-brass">Registro Validado</span>
                   </div>
 
+                  <p className="text-xs sm:text-sm text-[#cfbfab] font-light leading-relaxed mt-4 pt-4 border-t border-brass-dark/40">
+                    {exp.description}
+                  </p>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
 
-        {/* Certificações Técnicas Oficiais */}
+                <div className="mt-5 pt-3 border-t border-brass-dark/20 flex items-center justify-between text-[10px] font-schematic text-copper-light">
+                  <span className="flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-steamAmber-glow" />
+                    Modalidade: {exp.type}
+                  </span>
+                  <span className="text-brass">Registro Validado</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+
+        {/* ============================================================ */}
+        {/* COMPLEMENTO: CERTIFICAÇÕES TÉCNICAS OFICIAIS                */}
+        {/* ============================================================ */}
         {profileData.certifications && profileData.certifications.length > 0 && (
-          <div className="pt-8 border-t border-brass-dark/40">
+          <div className="mt-12 pt-8 border-t border-brass-dark/40">
             <div className="flex items-center gap-2 mb-4">
               <Award className="w-4 h-4 text-copper-light" />
-              <span className="text-xs font-schematic uppercase tracking-widest text-copper-light">
+              <span className="text-xs font-schematic uppercase tracking-widest text-copper-light font-bold">
                 Certificações & Habilitações Oficiais
               </span>
             </div>
@@ -126,7 +330,7 @@ export const AboutUFS = () => {
               {profileData.certifications.map((cert, idx) => (
                 <div
                   key={idx}
-                  className="flex items-center gap-2.5 px-4 py-2 rounded bg-[#18130e] border border-brass-dark/60 text-xs font-schematic text-brass-light hover:border-brass-light/80 transition-all shadow-sm"
+                  className="flex items-center gap-2.5 px-4 py-2.5 rounded bg-[#18130e] border border-brass-dark/60 text-xs font-schematic text-brass-light hover:border-brass-light/80 transition-all shadow-sm"
                 >
                   <Award className="w-4 h-4 text-steamAmber-glow flex-shrink-0" />
                   <div>
@@ -145,3 +349,4 @@ export const AboutUFS = () => {
 };
 
 export const Experience = AboutUFS;
+export const AboutMe = AboutUFS;

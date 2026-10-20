@@ -1,21 +1,11 @@
 import React, { useState } from 'react';
 import { SteampunkGear } from './SteampunkGear';
-import { SteampunkComputer } from './SteampunkComputer';
 import { profileData } from '../data/profile';
-import { ArrowDown, ExternalLink, Compass, Camera } from 'lucide-react';
+import { Camera } from 'lucide-react';
+import { GithubIcon, LinkedinIcon } from './SocialIcons';
 
 export const Hero = () => {
-  const [steamPressure, setSteamPressure] = useState(78);
-  const [steamPuffing, setSteamPuffing] = useState(false);
   const [userPhoto, setUserPhoto] = useState(null);
-
-  const handleBoostPressure = () => {
-    setSteamPuffing(true);
-    setSteamPressure((prev) => (prev >= 95 ? 70 : prev + 12));
-    setTimeout(() => {
-      setSteamPuffing(false);
-    }, 1200);
-  };
 
   const handlePhotoUpload = (e) => {
     const file = e.target.files?.[0];
@@ -25,171 +15,171 @@ export const Hero = () => {
     }
   };
 
+  const socialLinks = [
+    {
+      name: 'GitHub',
+      icon: GithubIcon,
+      url: profileData.social.github.url,
+      label: 'Acessar GitHub de Gustavo',
+    },
+    {
+      name: 'LinkedIn',
+      icon: LinkedinIcon,
+      url: profileData.social.linkedin.url,
+      label: 'Acessar LinkedIn de Gustavo',
+    },
+  ];
+
   return (
     <section
       id="hero"
-      className="relative min-h-screen pt-28 pb-16 flex items-center justify-center overflow-hidden steampunk-bg-pattern border-b-2 border-brass-dark/60"
+      className="relative min-h-[90vh] pt-32 pb-20 flex items-center justify-center overflow-hidden steampunk-bg-pattern border-b-2 border-brass-dark/60"
     >
-      {/* Engrenagens de Fundo (Watermark Dinâmico) */}
-      <div className="absolute top-12 -left-20 pointer-events-none opacity-20">
-        <SteampunkGear
-          size={320}
-          teeth={16}
-          color="brass"
-          speed={steamPuffing ? 'spin-medium' : 'spin-slow'}
-        />
+      {/* Engrenagens de Fundo Distantes (Aura Steampunk Industrial) */}
+      <div className="absolute top-10 -left-28 pointer-events-none opacity-15">
+        <SteampunkGear size={320} teeth={16} color="brass" speed="spin-slow" />
       </div>
-      <div className="absolute -bottom-24 -right-20 pointer-events-none opacity-20">
-        <SteampunkGear
-          size={380}
-          teeth={20}
-          color="copper"
-          speed={steamPuffing ? 'spin-medium' : 'spin-reverse-slow'}
-        />
+      <div className="absolute -bottom-28 -right-24 pointer-events-none opacity-15">
+        <SteampunkGear size={360} teeth={18} color="copper" speed="spin-reverse-slow" />
       </div>
-      <div className="absolute top-1/3 right-10 pointer-events-none opacity-15 hidden xl:block">
-        <SteampunkGear
-          size={180}
-          teeth={12}
-          color="iron"
-          speed="spin-slow"
-        />
-      </div>
-
-      {/* Partículas de Vapor Simuladas ao pressurizar */}
-      {steamPuffing && (
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-20">
-          <div className="w-96 h-96 rounded-full bg-white/10 blur-3xl animate-ping"></div>
-        </div>
-      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           
-          {/* Coluna Esquerda: Apresentação e Tipografia Vitoriana */}
+          {/* ============================================================ */}
+          {/* LADO ESQUERDO: Saudação em Português + Nome + 2 Frases       */}
+          {/* ============================================================ */}
           <div className="lg:col-span-7 flex flex-col items-start text-left">
             
-            {/* Bloco de Apresentação com Retrato Vitoriano (Foto de Gustavo) */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6 w-full">
-              {/* Medalhão Steampunk da Foto */}
-              <div className="relative group/photo flex-shrink-0">
-                {/* Engrenagem girando sutilmente atrás da foto */}
-                <div className="absolute -inset-2.5 pointer-events-none opacity-40 group-hover/photo:opacity-75 transition-opacity">
-                  <SteampunkGear size={138} teeth={12} color="brass" speed="spin-slow" />
-                </div>
-
-                {/* Moldura circular de latão com rebites */}
-                <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-tr from-[#3a2817] via-[#c69c4d] to-[#6d4c1b] shadow-[0_8px_25px_rgba(0,0,0,0.85)] border-2 border-brass-dark">
-                  <div className="w-full h-full rounded-full overflow-hidden bg-[#120e0b] border border-[#1a140f] relative flex items-center justify-center">
-                    <img
-                      src={userPhoto || profileData.personal.avatar}
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = profileData.personal.avatarFallback;
-                      }}
-                      alt={`Foto de ${profileData.personal.name}`}
-                      className="w-full h-full object-cover rounded-full group-hover/photo:scale-105 transition-transform duration-300"
-                    />
-
-                    {/* Overlay informativo ao passar o mouse */}
-                    <label
-                      htmlFor="hero-photo-input"
-                      title="Clique para testar uma foto sua agora ou salve em public/foto-perfil.jpg"
-                      className="absolute inset-0 bg-black/75 opacity-0 group-hover/photo:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center cursor-pointer text-center p-2 rounded-full"
-                    >
-                      <Camera className="w-5 h-5 text-brass-light mb-1" />
-                      <span className="text-[10px] font-schematic font-bold text-brass-light leading-tight">
-                        Sua Foto
-                      </span>
-                      <span className="text-[7.5px] font-schematic text-[#cbba9d] mt-0.5">
-                        foto-perfil.jpg
-                      </span>
-                    </label>
-
-                    <input
-                      id="hero-photo-input"
-                      type="file"
-                      accept="image/*"
-                      onChange={handlePhotoUpload}
-                      className="hidden"
-                    />
-                  </div>
-
-                  {/* 4 Rebites mecânicos no anel de latão */}
-                  <span className="absolute top-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></span>
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></span>
-                  <span className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></span>
-                  <span className="absolute right-0 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-brass-light border border-black shadow"></span>
-                </div>
-              </div>
-
-              {/* Títulos e Selo */}
-              <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
-                {/* Selo de Engenharia & TI */}
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-[#221a13] border border-brass-dark shadow-md mb-2.5">
-                  <Compass className="w-3.5 h-3.5 text-copper-light animate-spin-slow" />
-                  <span className="font-schematic text-xs font-bold tracking-wider text-brass-light uppercase">
-                    Engenharia de Software & TI
-                  </span>
-                  <span className="text-brass-dark">•</span>
-                  <span className="text-[10px] font-schematic text-[#cbba9d]">
-                    {profileData.personal.location}
-                  </span>
-                </div>
-
-                {/* Título Principal H1 (SEO) */}
-                <h1 className="font-cinzel text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-wide text-brass-gradient leading-tight mb-2 drop-shadow-lg">
-                  {profileData.personal.name}
-                </h1>
-
-                {/* Subtítulo de Graduação */}
-                <div className="flex items-center gap-2.5">
-                  <span className="h-0.5 w-8 bg-gradient-to-r from-brass to-copper"></span>
-                  <h2 className="font-celt text-base sm:text-lg md:text-xl text-copper-light font-semibold tracking-wide">
-                    {profileData.personal.title}
-                  </h2>
-                </div>
-              </div>
+            {/* Linha Superior: Saudação em Português com Emoji de Aceno */}
+            <div className="flex items-center gap-2.5 mb-2 sm:mb-3">
+              <span className="text-xl sm:text-2xl lg:text-3xl text-[#f3dec3] font-medium font-body tracking-tight">
+                Olá
+              </span>
+              <span className="animate-wave text-2xl sm:text-3xl inline-block select-none" role="img" aria-label="Aceno">
+                👋
+              </span>
+              <span className="text-xl sm:text-2xl lg:text-3xl text-[#f3dec3] font-medium font-body tracking-tight">
+                Meu nome é
+              </span>
             </div>
 
-            {/* Bio e Descrição Conceitual */}
-            <p className="text-sm sm:text-base text-[#cfbfab] leading-relaxed mb-8 max-w-2xl font-light">
-              {profileData.personal.bio}
-            </p>
+            {/* Nome Gigante com Gradiente Metálico e Ponto Marcante */}
+            <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tight leading-none mb-5 font-body">
+              <span className="bg-gradient-to-r from-[#ffd978] via-[#e59834] to-[#c85a17] bg-clip-text text-transparent drop-shadow-[0_4px_30px_rgba(245,158,11,0.45)]">
+                Gustavo
+              </span>
+              <span className="text-copper-light drop-shadow-[0_0_20px_#e0985c]">.</span>
+            </h1>
 
-            {/* Botões de Ação Mecânicos */}
-            <div className="flex flex-wrap items-center gap-4 w-full sm:w-auto">
-              <a
-                href="#projetos"
-                className="btn-steampunk px-6 py-3 rounded text-xs sm:text-sm font-schematic font-bold text-brass-light hover:text-white uppercase tracking-wider flex items-center justify-center gap-2 group w-full sm:w-auto"
-              >
-                <span>Examinar Projetos</span>
-                <ArrowDown className="w-4 h-4 text-copper-light transition-transform group-hover:translate-y-1" />
-              </a>
+            {/* Frases de Destaque em Português */}
+            <div className="space-y-1.5 sm:space-y-2 mb-8 sm:mb-9 text-lg sm:text-2xl lg:text-[1.65rem] text-[#d8c8b4] font-body leading-snug">
+              <p className="font-normal text-[#f5ecd5]">
+                Sou Desenvolvedor Full Stack & Estudante de Sistemas de Informação.
+              </p>
+              <p className="font-normal text-[#c7b49d]">
+                Eu crio{' '}
+                <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-brass-light via-steamAmber-bright to-copper-light drop-shadow-[0_0_12px_rgba(255,190,91,0.5)]">
+                  Projetos Incríveis
+                </span>{' '}
+                na Web e Sistemas.
+              </p>
+            </div>
 
-              <a
-                href={profileData.social.linkedin.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-steampunk px-6 py-3 rounded text-xs sm:text-sm font-schematic font-bold text-[#e2d5c3] hover:text-white uppercase tracking-wider flex items-center justify-center gap-2 w-full sm:w-auto"
-              >
-                <span>Conectar no LinkedIn</span>
-                <ExternalLink className="w-4 h-4 text-brass-light" />
-              </a>
-
-              <a
-                href="#contato"
-                className="px-5 py-3 rounded text-xs sm:text-sm font-schematic text-brass-light hover:text-white uppercase tracking-wider underline-offset-4 hover:underline flex items-center justify-center gap-1.5 w-full sm:w-auto"
-              >
-                <span>Central Telegráfica</span>
-              </a>
+            {/* Apenas GitHub e LinkedIn */}
+            <div className="flex items-center gap-4">
+              {socialLinks.map((item, idx) => {
+                const IconComponent = item.icon;
+                return (
+                  <a
+                    key={idx}
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={item.label}
+                    title={item.label}
+                    className="w-12 h-12 rounded-full bg-[#18120c] border border-brass-dark/80 text-[#e8dcce] hover:text-white hover:border-brass-light hover:bg-[#281b10] hover:shadow-[0_0_16px_rgba(241,210,137,0.45)] flex items-center justify-center transition-all duration-300 hover:-translate-y-1 group"
+                  >
+                    <IconComponent className="w-5 h-5 transition-transform group-hover:scale-110 text-[#d8c8b4] group-hover:text-brass-light" />
+                  </a>
+                );
+              })}
             </div>
 
           </div>
 
-          {/* Coluna Direita: O Computador Steampunk Vitoriano (Gabinete de Mogno & Máquina de Escrever) */}
-          <div className="lg:col-span-5 flex flex-col items-center justify-center w-full">
-            <SteampunkComputer />
+          {/* ============================================================ */}
+          {/* LADO DIREITO: FOTO REDONDA COM ENGRENAGENS MECÂNICAS AO REDOR */}
+          {/* ============================================================ */}
+          <div className="lg:col-span-5 flex items-center justify-center relative w-full py-8 lg:py-0">
+            
+            {/* Container Central da Foto com Engrenagens Conectadas */}
+            <div className="relative w-72 h-72 sm:w-84 sm:h-84 md:w-92 md:h-92 lg:w-[380px] lg:h-[380px] flex items-center justify-center">
+              
+              {/* Brilho de Vapor Âmbar ao Fundo */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-steamAmber-dim/25 via-brass/15 to-copper/25 blur-3xl pointer-events-none" />
+
+              {/* 1. Engrenagem Superior Direita (Latão) */}
+              <div className="absolute -top-7 -right-7 sm:-top-9 sm:-right-9 pointer-events-none drop-shadow-[0_6px_18px_rgba(0,0,0,0.9)] z-20">
+                <SteampunkGear size={110} teeth={12} color="brass" speed="spin-slow" />
+              </div>
+
+              {/* 2. Engrenagem Inferior Esquerda (Cobre) */}
+              <div className="absolute -bottom-8 -left-8 sm:-bottom-10 sm:-left-10 pointer-events-none drop-shadow-[0_6px_18px_rgba(0,0,0,0.9)] z-20">
+                <SteampunkGear size={125} teeth={14} color="copper" speed="spin-reverse-slow" />
+              </div>
+
+              {/* 3. Engrenagem Superior Esquerda (Ferro Forjado) */}
+              <div className="absolute -top-4 -left-4 sm:-top-6 sm:-left-6 pointer-events-none drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] z-0 opacity-80">
+                <SteampunkGear size={78} teeth={10} color="iron" speed="spin-medium" />
+              </div>
+
+              {/* 4. Engrenagem Inferior Direita (Latão Polido) */}
+              <div className="absolute -bottom-5 -right-5 sm:-bottom-6 sm:-right-6 pointer-events-none drop-shadow-[0_4px_14px_rgba(0,0,0,0.85)] z-0 opacity-85">
+                <SteampunkGear size={88} teeth={10} color="brass" speed="spin-reverse-slow" />
+              </div>
+
+              {/* Trilho Circular de Cremalheira Sutil ao Redor da Foto */}
+              <div className="absolute inset-[-14px] sm:inset-[-18px] rounded-full border border-dashed border-brass-dark/40 pointer-events-none opacity-60" />
+
+              {/* Apenas a Foto Redonda e Limpa */}
+              <div className="relative w-64 h-64 sm:w-76 sm:h-76 md:w-84 md:h-84 lg:w-92 lg:h-92 rounded-full overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.95)] group/photo cursor-pointer z-10">
+                <img
+                  src={userPhoto || profileData.personal.avatar}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = profileData.personal.avatarFallback;
+                  }}
+                  alt={`Foto de ${profileData.personal.name}`}
+                  className="w-full h-full object-cover rounded-full group-hover/photo:scale-105 transition-transform duration-500"
+                />
+
+                {/* Overlay Interativo para Trocar/Testar Foto */}
+                <label
+                  htmlFor="hero-round-photo-input"
+                  title="Clique para testar uma foto sua agora ou salve em public/foto-perfil.jpg"
+                  className="absolute inset-0 rounded-full bg-black/65 opacity-0 group-hover/photo:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center cursor-pointer text-center p-4 z-30"
+                >
+                  <Camera className="w-8 h-8 text-brass-light mb-1.5 animate-bounce" />
+                  <span className="text-xs sm:text-sm font-schematic font-bold text-brass-light">
+                    Atualizar Foto
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-schematic text-[#cbba9d] mt-1 max-w-[200px]">
+                    Clique para escolher imagem
+                  </span>
+                </label>
+
+                <input
+                  id="hero-round-photo-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  className="hidden"
+                />
+              </div>
+
+            </div>
+
           </div>
 
         </div>
