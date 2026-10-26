@@ -111,15 +111,12 @@ const SteampunkNavBulb = ({ isActive, icon: Icon, id }) => {
  * e engrenagens mecânicas que giram conforme o scroll da página:
  * - Sentido horário ao descer (scroll down)
  * - Sentido anti-horário ao subir (scroll up)
- * - Suporte a clique e arraste (Click & Drag) no trilho e na engrenagem
  */
 export const SteampunkSidebar = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [rotation, setRotation] = useState(0);
   const [activeSection, setActiveSection] = useState('hero');
-  const [isDragging, setIsDragging] = useState(false);
   const rafRef = useRef(null);
-  const trackRef = useRef(null);
 
   const sections = [
     { id: 'hero', label: 'Início', icon: Home, desc: 'Convés Principal' },
@@ -173,62 +170,6 @@ export const SteampunkSidebar = () => {
     };
   }, []);
 
-  // Atualizar scroll da janela a partir da posição do ponteiro no trilho
-  const updateScrollFromPointer = (clientY) => {
-    if (!trackRef.current) return;
-    const rect = trackRef.current.getBoundingClientRect();
-    const offsetY = clientY - rect.top;
-    const progress = Math.min(Math.max(offsetY / rect.height, 0), 1);
-    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-
-    window.scrollTo({
-      top: progress * totalHeight,
-      behavior: 'auto',
-    });
-  };
-
-  // Iniciar interação de clique e arraste
-  const handlePointerDown = (e) => {
-    // Permitir apenas clique principal (botão esquerdo)
-    if (e.button !== undefined && e.button !== 0) return;
-
-    // Se clicou em um botão de waypoint, não iniciar drag do trilho
-    if (e.target.closest('button')) return;
-
-    setIsDragging(true);
-    const clientY = e.clientY !== undefined ? e.clientY : e.touches?.[0]?.clientY;
-    if (clientY !== undefined) {
-      updateScrollFromPointer(clientY);
-    }
-
-    const onPointerMove = (moveEvent) => {
-      moveEvent.preventDefault();
-      const currentY =
-        moveEvent.clientY !== undefined
-          ? moveEvent.clientY
-          : moveEvent.touches?.[0]?.clientY;
-      if (currentY !== undefined) {
-        updateScrollFromPointer(currentY);
-      }
-    };
-
-    const onPointerUp = () => {
-      setIsDragging(false);
-      window.removeEventListener('mousemove', onPointerMove);
-      window.removeEventListener('mouseup', onPointerUp);
-      window.removeEventListener('touchmove', onPointerMove);
-      window.removeEventListener('touchend', onPointerUp);
-      document.body.style.userSelect = '';
-      document.body.style.cursor = '';
-    };
-
-    window.addEventListener('mousemove', onPointerMove, { passive: false });
-    window.addEventListener('mouseup', onPointerUp);
-    window.addEventListener('touchmove', onPointerMove, { passive: false });
-    window.addEventListener('touchend', onPointerUp);
-    document.body.style.userSelect = 'none';
-    document.body.style.cursor = 'grabbing';
-  };
 
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
@@ -302,8 +243,7 @@ export const SteampunkSidebar = () => {
       </div>
 
       {/* Console Vitoriano Industrial (em primeiro plano sobre as bases dos soquetes) */}
-      <div className={`relative z-10 flex flex-col items-center bg-[#130f0c]/95 backdrop-blur-md border rounded-2xl p-2 sm:p-2.5 shadow-[0_12px_35px_rgba(0,0,0,0.85)] transition-all duration-300 ${isDragging ? 'border-brass shadow-amber-glow' : 'border-brass-dark/80 hover:border-brass/70'
-        }`}>
+      <div className="relative z-10 flex flex-col items-center bg-[#130f0c]/95 backdrop-blur-md border border-brass-dark/80 hover:border-brass/70 rounded-2xl p-2 sm:p-2.5 shadow-[0_12px_35px_rgba(0,0,0,0.85)] transition-all duration-300">
 
         {/* Rebites nos cantos do painel */}
         <span className="absolute top-1.5 left-1.5 w-1.5 h-1.5 rounded-full bg-brass-light/80 shadow-[0_0_2px_#fff]"></span>
@@ -321,13 +261,9 @@ export const SteampunkSidebar = () => {
           </span>
         </div>
 
-        {/* Trilho de Cremalheira Vertical Arrastável (Rack & Pinion) */}
+        {/* Trilho de Cremalheira Vertical (Rack & Pinion) */}
         <div
-          ref={trackRef}
-          onMouseDown={handlePointerDown}
-          onTouchStart={handlePointerDown}
-          title="Clique ou arraste a engrenagem para rolar a página"
-          className="relative flex items-center justify-center my-1 cursor-pointer"
+          className="relative flex items-center justify-center my-1"
           style={{ height: `${trackHeight}px`, width: '50px' }}
         >
           {/* Haste de Latão / Trilho dentado */}
@@ -341,12 +277,9 @@ export const SteampunkSidebar = () => {
             ))}
           </div>
 
-          {/* Carrinho Mecânico com Engrenagens que acompanham o scroll ou são arrastadas */}
+          {/* Carrinho Mecânico com Engrenagens que acompanham o scroll */}
           <div
-            className={`absolute left-1/2 flex items-center justify-center transition-transform ${isDragging
-              ? 'scale-110 cursor-grabbing'
-              : 'cursor-grab hover:scale-105 duration-75'
-              }`}
+            className="absolute left-1/2 flex items-center justify-center"
             style={{
               top: `${scrollProgress * 100}%`,
               transform: 'translate(-50%, -50%)',
@@ -364,7 +297,7 @@ export const SteampunkSidebar = () => {
             </div>
 
             {/* Engrenagem Principal de Latão (Gira no sentido horário ao descer e anti-horário ao subir) */}
-            <div className={`relative ${isDragging ? 'drop-shadow-[0_0_15px_rgba(255,157,46,0.9)]' : 'drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)]'}`}>
+            <div className="relative drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)]">
               <SteampunkGear
                 size={44}
                 teeth={10}
@@ -374,10 +307,7 @@ export const SteampunkSidebar = () => {
               />
 
               {/* Indicador de Pressão / Centro iluminado com pulso suave */}
-              <div className={`absolute inset-0 m-auto w-2.5 h-2.5 rounded-full transition-all ${isDragging
-                ? 'bg-steamAmber-bright shadow-[0_0_12px_#ff9d2e] scale-125'
-                : 'bg-steamAmber-glow/80 shadow-[0_0_8px_#ff9d2e]'
-                }`}></div>
+              <div className="absolute inset-0 m-auto w-2.5 h-2.5 rounded-full bg-steamAmber-glow/80 shadow-[0_0_8px_#ff9d2e]"></div>
             </div>
           </div>
         </div>
