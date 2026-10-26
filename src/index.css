@@ -149,6 +149,16 @@
   transform-origin: 70% 70%;
 }
 
+@keyframes float-hat {
+  0%, 100% { transform: translateY(0px) rotate(-2deg); }
+  50%       { transform: translateY(-6px) rotate(2deg); }
+}
+
+.animate-float {
+  display: inline-block;
+  animation: float-hat 3.5s ease-in-out infinite;
+}
+
 /* ============================================================
    ANIMAÇÕES DO TERMINAL TELEGRÁFICO (Carta Steampunk)
    ============================================================ */
@@ -236,5 +246,27 @@
 
 .animate-float-letter {
   animation: float-letter 4s ease-in-out infinite;
+}
+
+/* Engrenagens Steampunk - Animações de Rotação */
+@keyframes spin-reverse {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin 35s linear infinite;
+}
+
+.animate-spin-reverse-slow {
+  animation: spin-reverse 28s linear infinite;
+}
+
+.animate-spin-medium {
+  animation: spin 18s linear infinite;
 }
 

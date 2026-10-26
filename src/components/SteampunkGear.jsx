@@ -71,20 +71,29 @@ export const SteampunkGear = ({
   // Furos no corpo da engrenagem (típico estilo relógio de bolso vitoriano)
   const holeAngles = [0, 60, 120, 180, 240, 300];
 
+  const SPEED_CLASSES = {
+    'spin-slow': 'animate-spin-slow',
+    'spin-reverse-slow': 'animate-spin-reverse-slow',
+    'spin-medium': 'animate-spin-medium',
+    'spin': 'animate-spin',
+  };
+
   const hasCustomRotation = rotation !== null && rotation !== undefined;
-  const animClass = hasCustomRotation || !speed ? '' : `animate-${speed}`;
+  const animClass = hasCustomRotation || !speed
+    ? ''
+    : (SPEED_CLASSES[speed] || (typeof speed === 'string' && speed.startsWith('animate-') ? speed : `animate-${speed}`));
   const rotationStyle = hasCustomRotation ? { transform: `rotate(${rotation}deg)` } : {};
 
   return (
     <div
       onClick={onClick}
       style={{ width: size, height: size, ...style }}
-      className={`inline-block select-none ${hasCustomRotation ? '' : 'transition-transform duration-500'} ${className}`}
+      className={`inline-block select-none origin-center ${animClass} ${className}`}
     >
       <svg
         viewBox="0 0 100 100"
         style={rotationStyle}
-        className={`w-full h-full drop-shadow-md ${animClass}`}
+        className={`w-full h-full drop-shadow-md`}
       >
         <defs>
           <radialGradient id={gearGradId} cx="40%" cy="40%" r="60%">

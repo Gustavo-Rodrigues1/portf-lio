@@ -4,6 +4,12 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: [
+    'animate-spin-slow',
+    'animate-spin-reverse-slow',
+    'animate-spin-medium',
+    'animate-spin',
+  ],
   theme: {
     extend: {
       colors: {
